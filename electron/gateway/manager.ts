@@ -698,10 +698,11 @@ export class GatewayManager extends EventEmitter {
         this.emit('chat:message', notification.params as { message: unknown });
         break;
         
-      case GatewayEventType.ERROR:
+      case GatewayEventType.ERROR: {
         const errorData = notification.params as { message?: string };
         this.emit('error', new Error(errorData.message || 'Gateway error'));
         break;
+      }
         
       default:
         // Unknown notification type, just log it

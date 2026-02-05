@@ -69,7 +69,7 @@ export function Sidebar() {
   const gatewayStatus = useGatewayStore((state) => state.status);
   
   const [versionClicks, setVersionClicks] = useState(0);
-  const [appVersion, setAppVersion] = useState('0.1.0');
+  const [, setAppVersion] = useState('0.1.0');
   
   // Get app version
   useEffect(() => {
@@ -79,7 +79,7 @@ export function Sidebar() {
   }, []);
   
   // Handle version click for dev mode unlock
-  const handleVersionClick = () => {
+  const _handleVersionClick = () => {
     const clicks = versionClicks + 1;
     setVersionClicks(clicks);
     

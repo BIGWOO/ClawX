@@ -11,7 +11,7 @@ import {
   hasApiKey,
   saveProvider,
   getProvider,
-  getAllProviders,
+
   deleteProvider,
   setDefaultProvider,
   getDefaultProvider,

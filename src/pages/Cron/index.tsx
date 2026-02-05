@@ -447,7 +447,7 @@ export function Cron() {
     try {
       await toggleJob(id, enabled);
       toast.success(enabled ? 'Task enabled' : 'Task paused');
-    } catch (err) {
+    } catch {
       toast.error('Failed to update task');
     }
   }, [toggleJob]);
@@ -456,7 +456,7 @@ export function Cron() {
     try {
       await deleteJob(id);
       toast.success('Task deleted');
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete task');
     }
   }, [deleteJob]);

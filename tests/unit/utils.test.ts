@@ -2,7 +2,7 @@
  * Utility Functions Tests
  */
 import { describe, it, expect } from 'vitest';
-import { cn, formatRelativeTime, formatDuration, truncate } from '@/lib/utils';
+import { cn, formatDuration, truncate } from '@/lib/utils';
 
 describe('cn (class name merge)', () => {
   it('should merge class names', () => {
@@ -10,8 +10,8 @@ describe('cn (class name merge)', () => {
   });
   
   it('should handle conditional classes', () => {
-    expect(cn('base', true && 'active')).toBe('base active');
-    expect(cn('base', false && 'active')).toBe('base');
+    expect(cn('base', 'active')).toBe('base active');
+    expect(cn('base', false)).toBe('base');
   });
   
   it('should merge tailwind classes correctly', () => {

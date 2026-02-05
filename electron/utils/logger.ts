@@ -70,7 +70,7 @@ function writeToFile(formatted: string): void {
   if (logFilePath) {
     try {
       appendFileSync(logFilePath, formatted + '\n');
-    } catch (error) {
+    } catch {
       // Silently fail if we can't write to file
     }
   }

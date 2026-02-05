@@ -66,7 +66,7 @@ export const useChannelsStore = create<ChannelsState>((set, get) => ({
         }));
         return newChannel;
       }
-    } catch (error) {
+    } catch {
       // Create local channel if gateway unavailable
       const newChannel: Channel = {
         id: `local-${Date.now()}`,

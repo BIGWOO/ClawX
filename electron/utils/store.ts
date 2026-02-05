@@ -6,6 +6,7 @@
 import { randomBytes } from 'crypto';
 
 // Lazy-load electron-store (ESM module)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let settingsStoreInstance: any = null;
 
 /**
@@ -142,7 +143,7 @@ export async function importSettings(json: string): Promise<void> {
     const settings = JSON.parse(json);
     const store = await getSettingsStore();
     store.set(settings);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid settings JSON');
   }
 }

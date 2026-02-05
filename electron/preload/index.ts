@@ -161,6 +161,7 @@ const electronAPI = {
      */
     off: (channel: string, callback?: (...args: unknown[]) => void) => {
       if (callback) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ipcRenderer.removeListener(channel, callback as any);
       } else {
         ipcRenderer.removeAllListeners(channel);

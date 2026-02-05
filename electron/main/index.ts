@@ -2,13 +2,13 @@
  * Electron Main Process Entry
  * Manages window creation, system tray, and IPC handlers
  */
-import { app, BrowserWindow, ipcMain, session, shell } from 'electron';
+import { app, BrowserWindow, session, shell } from 'electron';
 import { join } from 'path';
 import { GatewayManager } from '../gateway/manager';
 import { registerIpcHandlers } from './ipc-handlers';
 import { createTray } from './tray';
 import { createMenu } from './menu';
-import { PORTS } from '../utils/config';
+
 import { appUpdater, registerUpdateHandlers } from './updater';
 
 // Disable GPU acceleration for better compatibility

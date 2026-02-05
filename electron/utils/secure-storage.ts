@@ -5,7 +5,9 @@
 import { safeStorage } from 'electron';
 
 // Lazy-load electron-store (ESM module)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let store: any = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let providerStore: any = null;
 
 async function getStore() {

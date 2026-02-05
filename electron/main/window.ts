@@ -13,6 +13,7 @@ interface WindowState {
 }
 
 // Lazy-load electron-store (ESM module)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let windowStateStore: any = null;
 
 async function getStore() {
@@ -89,6 +90,7 @@ export async function saveWindowState(win: BrowserWindow): Promise<void> {
 export function trackWindowState(win: BrowserWindow): void {
   // Save state on window events
   ['resize', 'move', 'close'].forEach((event) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     win.on(event as any, () => saveWindowState(win));
   });
 }

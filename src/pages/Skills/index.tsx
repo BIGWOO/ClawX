@@ -322,7 +322,7 @@ export function Skills() {
         }
       }
       toast.success(allEnabled ? 'Bundle disabled' : 'Bundle enabled');
-    } catch (err) {
+    } catch {
       toast.error('Failed to apply bundle');
     }
   }, [skills, enableSkill, disableSkill]);
