@@ -32,7 +32,7 @@ ClawX is a modern desktop application that provides a beautiful graphical interf
 
 ```bash
 # Clone the repository
-git clone https://github.com/clawx/clawx.git
+git clone https://github.com/ValueCell-ai/ClawX.git
 cd clawx
 
 # Install dependencies
