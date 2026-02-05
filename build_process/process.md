@@ -21,6 +21,8 @@
 * [commit_13] Remove channel setup step - Simplified onboarding, channels moved to Settings
 * [commit_14] Auto-install skills step - Replace skill selection with auto-installation progress UI
 * [commit_15] Fix Gateway WebSocket handshake - Implement proper OpenClaw protocol
+* [commit_16] Fix RPC methods - Align stores with OpenClaw protocol (channels.status, skills.status, chat params)
+* [commit_17] API key integration + Control UI chat - Write keys to OpenClaw auth-profiles, embed Control UI
 
 ### Plan:
 1. ~~Initialize project structure~~ ✅
@@ -52,6 +54,9 @@ All core features have been implemented:
 - Simplified setup wizard (channel connection deferred to Settings page)
 - Auto-install skills step with real-time progress UI (no manual skill selection)
 - Fixed Gateway WebSocket connection with proper OpenClaw handshake protocol
+- Aligned RPC store methods with OpenClaw protocol (channels.status, skills.status, chat params)
+- API key integration: write keys to ~/.openclaw/agents/main/agent/auth-profiles.json
+- Embedded OpenClaw Control UI for chat via webview (replacing custom implementation)
 
 ## Version Milestones
 
