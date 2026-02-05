@@ -101,15 +101,9 @@ export function ProvidersSettings() {
   };
   
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-medium">AI Providers</h3>
-          <p className="text-sm text-muted-foreground">
-            Configure your AI model providers and API keys
-          </p>
-        </div>
-        <Button onClick={() => setShowAddDialog(true)}>
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button size="sm" onClick={() => setShowAddDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Add Provider
         </Button>
@@ -180,6 +174,21 @@ interface ProviderCardProps {
   onValidateKey: (key: string) => Promise<{ valid: boolean; error?: string }>;
 }
 
+/**
+ * Shorten a masked key to a more readable format.
+ * e.g. "sk-or-v1-a20a****df67" -> "sk-...df67"
+ */
+function shortenKeyDisplay(masked: string | null): string {
+  if (!masked) return 'No key';
+  // Show first 4 chars + last 4 chars
+  if (masked.length > 12) {
+    const prefix = masked.substring(0, 4);
+    const suffix = masked.substring(masked.length - 4);
+    return `${prefix}...${suffix}`;
+  }
+  return masked;
+}
+
 function ProviderCard({
   provider,
   isDefault,
@@ -225,89 +234,86 @@ function ProviderCard({
   
   return (
     <Card className={cn(isDefault && 'ring-2 ring-primary')}>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
+      <CardContent className="p-4">
+        {/* Top row: icon + name + toggle */}
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{typeInfo?.icon || '⚙️'}</span>
+            <span className="text-xl">{typeInfo?.icon || '⚙️'}</span>
             <div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-lg">{provider.name}</CardTitle>
+                <span className="font-semibold">{provider.name}</span>
                 {isDefault && (
                   <Badge variant="default" className="text-xs">Default</Badge>
                 )}
               </div>
-              <CardDescription className="capitalize">{provider.type}</CardDescription>
+              <span className="text-xs text-muted-foreground capitalize">{provider.type}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={provider.enabled}
-              onCheckedChange={onToggleEnabled}
-            />
-          </div>
+          <Switch
+            checked={provider.enabled}
+            onCheckedChange={onToggleEnabled}
+          />
         </div>
-      </CardHeader>
-      <CardContent>
+        
+        {/* Key row */}
         {isEditing ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>API Key</Label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Input
-                    type={showKey ? 'text' : 'password'}
-                    placeholder={typeInfo?.placeholder}
-                    value={newKey}
-                    onChange={(e) => setNewKey(e.target.value)}
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowKey(!showKey)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-                <Button 
-                  variant="outline" 
-                  onClick={handleSaveKey}
-                  disabled={!newKey || validating || saving}
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type={showKey ? 'text' : 'password'}
+                  placeholder={typeInfo?.placeholder}
+                  value={newKey}
+                  onChange={(e) => setNewKey(e.target.value)}
+                  className="pr-10 h-9 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowKey(!showKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {validating || saving ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Check className="h-4 w-4" />
-                  )}
-                </Button>
-                <Button variant="ghost" onClick={onCancelEdit}>
-                  <X className="h-4 w-4" />
-                </Button>
+                  {showKey ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                </button>
               </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleSaveKey}
+                disabled={!newKey || validating || saving}
+              >
+                {validating || saving ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Check className="h-3.5 w-3.5" />
+                )}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={onCancelEdit}>
+                <X className="h-3.5 w-3.5" />
+              </Button>
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Key className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-mono">
-                {provider.hasKey ? provider.keyMasked : 'No API key set'}
+          <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <Key className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <span className="text-sm font-mono text-muted-foreground truncate">
+                {provider.hasKey ? shortenKeyDisplay(provider.keyMasked) : 'No API key set'}
               </span>
               {provider.hasKey && (
-                <Badge variant="secondary" className="text-xs">Configured</Badge>
+                <Badge variant="secondary" className="text-xs shrink-0">Configured</Badge>
               )}
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-0.5 shrink-0 ml-2">
               {!isDefault && (
-                <Button variant="ghost" size="icon" onClick={onSetDefault} title="Set as default">
-                  <Star className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onSetDefault} title="Set as default">
+                  <Star className="h-3.5 w-3.5" />
                 </Button>
               )}
-              <Button variant="ghost" size="icon" onClick={onEdit} title="Edit API key">
-                <Edit className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit} title="Edit API key">
+                <Edit className="h-3.5 w-3.5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={onDelete} title="Delete provider">
-                <Trash2 className="h-4 w-4 text-destructive" />
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete} title="Delete provider">
+                <Trash2 className="h-3.5 w-3.5 text-destructive" />
               </Button>
             </div>
           </div>
