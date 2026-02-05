@@ -18,6 +18,7 @@
 * [commit_10] Cron tasks - Create/edit dialog, schedule presets, improved UI
 * [commit_11] OpenClaw submodule fix - GitHub URL, auto-generated token, WebSocket auth
 * [commit_12] Real API key validation - OpenRouter support, actual API calls to verify keys
+* [commit_13] Remove channel setup step - Simplified onboarding, channels moved to Settings
 
 ### Plan:
 1. ~~Initialize project structure~~ ✅
@@ -46,6 +47,7 @@ All core features have been implemented:
 - Cron tasks management for scheduled automation
 - OpenClaw submodule from official GitHub (v2026.2.3) with auto-token auth
 - Real API key validation via actual API calls (Anthropic, OpenAI, Google, OpenRouter)
+- Simplified setup wizard (channel connection deferred to Settings page)
 
 ## Version Milestones
 

@@ -47,11 +47,7 @@ const steps: SetupStep[] = [
     title: 'AI Provider',
     description: 'Configure your AI service',
   },
-  {
-    id: 'channel',
-    title: 'Connect Channel',
-    description: 'Link a messaging app',
-  },
+  // Channel step removed - users can configure channels later in Settings
   {
     id: 'skills',
     title: 'Choose Skills',
@@ -80,20 +76,7 @@ const providers: Provider[] = [
   { id: 'openrouter', name: 'OpenRouter', model: 'Multi-Model', icon: '🌐', placeholder: 'sk-or-...' },
 ];
 
-// Channel types
-interface Channel {
-  type: string;
-  name: string;
-  icon: string;
-  description: string;
-}
-
-const channels: Channel[] = [
-  { type: 'whatsapp', name: 'WhatsApp', icon: '📱', description: 'Connect via QR code scan' },
-  { type: 'telegram', name: 'Telegram', icon: '✈️', description: 'Connect via bot token' },
-  { type: 'discord', name: 'Discord', icon: '🎮', description: 'Connect via bot token' },
-  { type: 'slack', name: 'Slack', icon: '💼', description: 'Connect via OAuth' },
-];
+// NOTE: Channel types moved to Settings > Channels page
 
 // Skill bundle types
 interface SkillBundle {
@@ -146,7 +129,7 @@ export function Setup() {
   // Setup state
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState('');
-  const [selectedChannel, setSelectedChannel] = useState<string | null>(null);
+  // Channel selection moved to Settings page
   const [selectedBundles, setSelectedBundles] = useState<Set<string>>(new Set(['productivity', 'developer']));
   
   const step = steps[currentStep];
@@ -187,17 +170,14 @@ export function Setup() {
       case 2: // Provider
         setCanProceed(selectedProvider !== null && apiKey.length > 0);
         break;
-      case 3: // Channel
-        setCanProceed(true); // Channel is optional
-        break;
-      case 4: // Skills
+      case 3: // Skills
         setCanProceed(selectedBundles.size > 0);
         break;
-      case 5: // Complete
+      case 4: // Complete
         setCanProceed(true);
         break;
     }
-  }, [currentStep, selectedProvider, apiKey, selectedChannel, selectedBundles]);
+  }, [currentStep, selectedProvider, apiKey, selectedBundles]);
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
@@ -263,13 +243,6 @@ export function Setup() {
               />
             )}
             {currentStep === 3 && (
-              <ChannelContent
-                channels={channels}
-                selectedChannel={selectedChannel}
-                onSelectChannel={setSelectedChannel}
-              />
-            )}
-            {currentStep === 4 && (
               <SkillsContent
                 bundles={skillBundles}
                 selectedBundles={selectedBundles}
@@ -284,10 +257,9 @@ export function Setup() {
                 }}
               />
             )}
-            {currentStep === 5 && (
+            {currentStep === 4 && (
               <CompleteContent
                 selectedProvider={selectedProvider}
-                selectedChannel={selectedChannel}
                 selectedBundles={selectedBundles}
                 bundles={skillBundles}
               />
@@ -315,7 +287,7 @@ export function Setup() {
                   'Get Started'
                 ) : (
                   <>
-                    {currentStep === 3 && !selectedChannel ? 'Skip' : 'Next'}
+                    Next
                     <ChevronRight className="h-4 w-4 ml-2" />
                   </>
                 )}
@@ -703,112 +675,7 @@ function ProviderContent({
   );
 }
 
-interface ChannelContentProps {
-  channels: Channel[];
-  selectedChannel: string | null;
-  onSelectChannel: (type: string | null) => void;
-}
-
-function ChannelContent({ channels, selectedChannel, onSelectChannel }: ChannelContentProps) {
-  const [connecting, setConnecting] = useState(false);
-  const [qrCode, setQrCode] = useState<string | null>(null);
-  
-  const handleConnect = async (channelType: string) => {
-    onSelectChannel(channelType);
-    setConnecting(true);
-    
-    // Simulate QR code generation for WhatsApp
-    if (channelType === 'whatsapp') {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // In real app, this would be a real QR code
-      setQrCode('placeholder');
-    }
-    
-    setConnecting(false);
-  };
-  
-  return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Connect a Channel</h2>
-        <p className="text-slate-300">
-          Link a messaging app to start chatting with your AI
-        </p>
-      </div>
-      
-      {!selectedChannel ? (
-        <div className="grid grid-cols-2 gap-4">
-          {channels.map((channel) => (
-            <button
-              key={channel.type}
-              onClick={() => handleConnect(channel.type)}
-              className="p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-left"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{channel.icon}</span>
-                <div>
-                  <p className="font-medium">{channel.name}</p>
-                  <p className="text-sm text-slate-400">{channel.description}</p>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center space-y-4"
-        >
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-2xl">
-              {channels.find((c) => c.type === selectedChannel)?.icon}
-            </span>
-            <span className="font-medium">
-              {channels.find((c) => c.type === selectedChannel)?.name}
-            </span>
-          </div>
-          
-          {connecting ? (
-            <div className="flex flex-col items-center gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p>Generating QR code...</p>
-            </div>
-          ) : selectedChannel === 'whatsapp' && qrCode ? (
-            <div className="space-y-4">
-              <div className="bg-white p-4 rounded-lg inline-block">
-                {/* Placeholder QR code */}
-                <div className="w-48 h-48 bg-gray-200 flex items-center justify-center text-gray-500">
-                  QR Code Placeholder
-                </div>
-              </div>
-              <p className="text-sm text-slate-300">
-                Scan this QR code with WhatsApp to connect
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <p className="text-slate-300">
-                Follow the instructions to connect your {channels.find((c) => c.type === selectedChannel)?.name} account.
-              </p>
-            </div>
-          )}
-          
-          <Button variant="ghost" onClick={() => {
-            onSelectChannel(null);
-            setQrCode(null);
-          }}>
-            Choose different channel
-          </Button>
-        </motion.div>
-      )}
-      
-      <p className="text-sm text-slate-400 text-center">
-        You can add more channels later in Settings
-      </p>
-    </div>
-  );
-}
+// NOTE: ChannelContent component moved to Settings > Channels page
 
 interface SkillsContentProps {
   bundles: SkillBundle[];
@@ -865,16 +732,14 @@ function SkillsContent({ bundles, selectedBundles, onToggleBundle }: SkillsConte
 
 interface CompleteContentProps {
   selectedProvider: string | null;
-  selectedChannel: string | null;
   selectedBundles: Set<string>;
   bundles: SkillBundle[];
 }
 
-function CompleteContent({ selectedProvider, selectedChannel, selectedBundles, bundles }: CompleteContentProps) {
+function CompleteContent({ selectedProvider, selectedBundles, bundles }: CompleteContentProps) {
   const gatewayStatus = useGatewayStore((state) => state.status);
   
   const providerData = providers.find((p) => p.id === selectedProvider);
-  const channelData = channels.find((c) => c.type === selectedChannel);
   const selectedBundleNames = bundles
     .filter((b) => selectedBundles.has(b.id))
     .map((b) => b.name)
@@ -897,12 +762,6 @@ function CompleteContent({ selectedProvider, selectedChannel, selectedBundles, b
           </span>
         </div>
         <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
-          <span>Channel</span>
-          <span className={selectedChannel ? 'text-green-400' : 'text-slate-400'}>
-            {channelData ? `${channelData.icon} ${channelData.name}` : 'Skipped'}
-          </span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
           <span>Skills</span>
           <span className="text-green-400">
             {selectedBundleNames || 'None selected'}
@@ -915,6 +774,10 @@ function CompleteContent({ selectedProvider, selectedChannel, selectedBundles, b
           </span>
         </div>
       </div>
+      
+      <p className="text-sm text-slate-400">
+        You can connect messaging channels later in Settings → Channels
+      </p>
     </div>
   );
 }
