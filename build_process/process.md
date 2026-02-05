@@ -20,6 +20,7 @@
 * [commit_12] Real API key validation - OpenRouter support, actual API calls to verify keys
 * [commit_13] Remove channel setup step - Simplified onboarding, channels moved to Settings
 * [commit_14] Auto-install skills step - Replace skill selection with auto-installation progress UI
+* [commit_15] Fix Gateway WebSocket handshake - Implement proper OpenClaw protocol
 
 ### Plan:
 1. ~~Initialize project structure~~ ✅
@@ -50,6 +51,7 @@ All core features have been implemented:
 - Real API key validation via actual API calls (Anthropic, OpenAI, Google, OpenRouter)
 - Simplified setup wizard (channel connection deferred to Settings page)
 - Auto-install skills step with real-time progress UI (no manual skill selection)
+- Fixed Gateway WebSocket connection with proper OpenClaw handshake protocol
 
 ## Version Milestones
 

@@ -208,6 +208,7 @@ export class GatewayManager extends EventEmitter {
   
   /**
    * Make an RPC call to the Gateway
+   * Uses OpenClaw protocol format: { type: "req", id: "...", method: "...", params: {...} }
    */
   async rpc<T>(method: string, params?: unknown, timeoutMs = 30000): Promise<T> {
     return new Promise((resolve, reject) => {
@@ -231,9 +232,9 @@ export class GatewayManager extends EventEmitter {
         timeout,
       });
       
-      // Send request
+      // Send request using OpenClaw protocol format
       const request = {
-        jsonrpc: '2.0',
+        type: 'req',
         id,
         method,
         params,
@@ -442,20 +443,73 @@ export class GatewayManager extends EventEmitter {
     const gatewayToken = await getSetting('gatewayToken');
     
     return new Promise((resolve, reject) => {
-      // Include token in WebSocket URL for authentication
-      const wsUrl = `ws://localhost:${port}/ws?auth=${encodeURIComponent(gatewayToken)}`;
+      // WebSocket URL (token will be sent in connect handshake, not URL)
+      const wsUrl = `ws://localhost:${port}/ws`;
       
       this.ws = new WebSocket(wsUrl);
+      let handshakeComplete = false;
       
-      this.ws.on('open', () => {
-        console.log('WebSocket connected to Gateway');
-        this.setStatus({
-          state: 'running',
-          port,
-          connectedAt: Date.now(),
+      this.ws.on('open', async () => {
+        console.log('WebSocket opened, sending connect handshake...');
+        
+        // Send proper connect handshake as required by OpenClaw Gateway protocol
+        // The Gateway expects: { type: "req", id: "...", method: "connect", params: ConnectParams }
+        const connectId = `connect-${Date.now()}`;
+        const connectFrame = {
+          type: 'req',
+          id: connectId,
+          method: 'connect',
+          params: {
+            minProtocol: 3,
+            maxProtocol: 3,
+            client: {
+              id: 'gateway-client',
+              displayName: 'ClawX',
+              version: '0.1.0',
+              platform: process.platform,
+              mode: 'ui',
+            },
+            auth: {
+              token: gatewayToken,
+            },
+            caps: [],
+            role: 'operator',
+            scopes: [],
+          },
+        };
+        
+        console.log('Sending connect handshake:', JSON.stringify(connectFrame));
+        this.ws?.send(JSON.stringify(connectFrame));
+        
+        // Store pending connect request
+        const connectTimeout = setTimeout(() => {
+          if (!handshakeComplete) {
+            console.error('Connect handshake timeout');
+            reject(new Error('Connect handshake timeout'));
+            this.ws?.close();
+          }
+        }, 10000);
+        
+        this.pendingRequests.set(connectId, {
+          resolve: (result) => {
+            clearTimeout(connectTimeout);
+            handshakeComplete = true;
+            console.log('WebSocket handshake complete, gateway connected');
+            this.setStatus({
+              state: 'running',
+              port,
+              connectedAt: Date.now(),
+            });
+            this.startPing();
+            resolve();
+          },
+          reject: (error) => {
+            clearTimeout(connectTimeout);
+            console.error('Connect handshake failed:', error);
+            reject(error);
+          },
+          timeout: connectTimeout,
         });
-        this.startPing();
-        resolve();
       });
       
       this.ws.on('message', (data) => {
@@ -467,8 +521,13 @@ export class GatewayManager extends EventEmitter {
         }
       });
       
-      this.ws.on('close', () => {
-        console.log('WebSocket disconnected');
+      this.ws.on('close', (code, reason) => {
+        const reasonStr = reason?.toString() || 'unknown';
+        console.log(`WebSocket disconnected: code=${code}, reason=${reasonStr}`);
+        if (!handshakeComplete) {
+          reject(new Error(`WebSocket closed before handshake: ${reasonStr}`));
+          return;
+        }
         if (this.status.state === 'running') {
           this.setStatus({ state: 'stopped' });
           this.scheduleReconnect();
@@ -477,7 +536,9 @@ export class GatewayManager extends EventEmitter {
       
       this.ws.on('error', (error) => {
         console.error('WebSocket error:', error);
-        reject(error);
+        if (!handshakeComplete) {
+          reject(error);
+        }
       });
     });
   }
@@ -486,7 +547,38 @@ export class GatewayManager extends EventEmitter {
    * Handle incoming WebSocket message
    */
   private handleMessage(message: unknown): void {
-    // Check if this is a JSON-RPC response
+    if (typeof message !== 'object' || message === null) {
+      console.warn('Received non-object message:', message);
+      return;
+    }
+    
+    const msg = message as Record<string, unknown>;
+    
+    // Handle OpenClaw protocol response format: { type: "res", id: "...", ok: true/false, ... }
+    if (msg.type === 'res' && typeof msg.id === 'string') {
+      if (this.pendingRequests.has(msg.id)) {
+        const request = this.pendingRequests.get(msg.id)!;
+        clearTimeout(request.timeout);
+        this.pendingRequests.delete(msg.id);
+        
+        if (msg.ok === false || msg.error) {
+          const errorObj = msg.error as { message?: string; code?: number } | undefined;
+          const errorMsg = errorObj?.message || JSON.stringify(msg.error) || 'Unknown error';
+          request.reject(new Error(errorMsg));
+        } else {
+          request.resolve(msg.payload ?? msg);
+        }
+        return;
+      }
+    }
+    
+    // Handle OpenClaw protocol event format: { type: "event", event: "...", payload: {...} }
+    if (msg.type === 'event' && typeof msg.event === 'string') {
+      this.handleProtocolEvent(msg.event, msg.payload);
+      return;
+    }
+    
+    // Fallback: Check if this is a JSON-RPC 2.0 response (legacy support)
     if (isResponse(message) && message.id && this.pendingRequests.has(String(message.id))) {
       const request = this.pendingRequests.get(String(message.id))!;
       clearTimeout(request.timeout);
@@ -503,7 +595,7 @@ export class GatewayManager extends EventEmitter {
       return;
     }
     
-    // Check if this is a notification (server-initiated event)
+    // Check if this is a JSON-RPC notification (server-initiated event)
     if (isNotification(message)) {
       this.handleNotification(message);
       return;
@@ -511,6 +603,27 @@ export class GatewayManager extends EventEmitter {
     
     // Emit generic message for other handlers
     this.emit('message', message);
+  }
+  
+  /**
+   * Handle OpenClaw protocol events
+   */
+  private handleProtocolEvent(event: string, payload: unknown): void {
+    // Map OpenClaw events to our internal event types
+    switch (event) {
+      case 'tick':
+        // Heartbeat tick, ignore
+        break;
+      case 'chat':
+        this.emit('chat:message', { message: payload });
+        break;
+      case 'channel.status':
+        this.emit('channel:status', payload as { channelId: string; status: string });
+        break;
+      default:
+        // Forward unknown events as generic notifications
+        this.emit('notification', { method: event, params: payload });
+    }
   }
   
   /**
