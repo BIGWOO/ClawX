@@ -396,12 +396,47 @@ function RuntimeContent({ onStatusChange }: RuntimeContentProps) {
       }));
     }
     
-    // Check OpenClaw (simulated - in real app would check if openclaw is installed)
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setChecks((prev) => ({
-      ...prev,
-      openclaw: { status: 'success', message: 'OpenClaw package ready' },
-    }));
+    // Check OpenClaw submodule status
+    try {
+      const openclawStatus = await window.electron.ipcRenderer.invoke('openclaw:status') as {
+        submoduleExists: boolean;
+        isInstalled: boolean;
+        isBuilt: boolean;
+        dir: string;
+      };
+      
+      if (!openclawStatus.submoduleExists) {
+        setChecks((prev) => ({
+          ...prev,
+          openclaw: { 
+            status: 'error', 
+            message: 'OpenClaw submodule not found. Run: git submodule update --init' 
+          },
+        }));
+      } else if (!openclawStatus.isInstalled) {
+        setChecks((prev) => ({
+          ...prev,
+          openclaw: { 
+            status: 'error', 
+            message: 'Dependencies not installed. Run: cd openclaw && pnpm install' 
+          },
+        }));
+      } else {
+        const modeLabel = openclawStatus.isBuilt ? 'production' : 'development';
+        setChecks((prev) => ({
+          ...prev,
+          openclaw: { 
+            status: 'success', 
+            message: `OpenClaw package ready (${modeLabel} mode)` 
+          },
+        }));
+      }
+    } catch (error) {
+      setChecks((prev) => ({
+        ...prev,
+        openclaw: { status: 'error', message: `Failed to check: ${error}` },
+      }));
+    }
     
     // Check Gateway
     await new Promise((resolve) => setTimeout(resolve, 500));

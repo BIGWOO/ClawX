@@ -38,7 +38,12 @@
     "publish:mac": "electron-builder --mac --publish always",
     "publish:win": "electron-builder --win --publish always",
     "publish:linux": "electron-builder --linux --publish always",
-    "release": "pnpm run build:vite && pnpm run publish"
+    "release": "pnpm run build:vite && pnpm run publish",
+    "postinstall": "git submodule update --init",
+    "openclaw:init": "git submodule update --init && cd openclaw && pnpm install",
+    "openclaw:install": "cd openclaw && pnpm install",
+    "openclaw:build": "cd openclaw && pnpm build",
+    "openclaw:update": "git submodule update --remote openclaw && cd openclaw && pnpm install"
   },
   "dependencies": {
     "electron-store": "^10.0.0",

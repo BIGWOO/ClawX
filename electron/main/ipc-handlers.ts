@@ -19,6 +19,7 @@ import {
   isEncryptionAvailable,
   type ProviderConfig,
 } from '../utils/secure-storage';
+import { getOpenClawStatus } from '../utils/paths';
 
 /**
  * Register all IPC handlers
@@ -29,6 +30,9 @@ export function registerIpcHandlers(
 ): void {
   // Gateway handlers
   registerGatewayHandlers(gatewayManager, mainWindow);
+  
+  // OpenClaw handlers
+  registerOpenClawHandlers();
   
   // Provider handlers
   registerProviderHandlers();
@@ -151,6 +155,23 @@ function registerGatewayHandlers(
     if (!mainWindow.isDestroyed()) {
       mainWindow.webContents.send('gateway:error', error.message);
     }
+  });
+}
+
+/**
+ * OpenClaw-related IPC handlers
+ * For checking submodule status
+ */
+function registerOpenClawHandlers(): void {
+  // Get OpenClaw submodule status
+  ipcMain.handle('openclaw:status', () => {
+    return getOpenClawStatus();
+  });
+  
+  // Check if OpenClaw is ready (submodule present and dependencies installed)
+  ipcMain.handle('openclaw:isReady', () => {
+    const status = getOpenClawStatus();
+    return status.submoduleExists && status.isInstalled;
   });
 }
 

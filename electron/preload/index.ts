@@ -22,6 +22,9 @@ const electronAPI = {
         'gateway:restart',
         'gateway:rpc',
         'gateway:health',
+        // OpenClaw
+        'openclaw:status',
+        'openclaw:isReady',
         // Shell
         'shell:openExternal',
         'shell:showItemInFolder',

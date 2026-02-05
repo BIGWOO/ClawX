@@ -4,8 +4,16 @@
  */
 import { spawn, ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
+import { existsSync } from 'fs';
 import WebSocket from 'ws';
 import { PORTS } from '../utils/config';
+import { 
+  getOpenClawDir, 
+  getOpenClawEntryPath, 
+  isOpenClawBuilt, 
+  isOpenClawSubmodulePresent,
+  isOpenClawInstalled 
+} from '../utils/paths';
 import { GatewayEventType, JsonRpcNotification, isNotification, isResponse } from './protocol';
 
 /**
@@ -308,17 +316,59 @@ export class GatewayManager extends EventEmitter {
   
   /**
    * Start Gateway process
+   * Uses OpenClaw submodule - supports both production (dist) and development modes
    */
   private async startProcess(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // Find openclaw command
-      const command = 'openclaw';
-      const args = ['gateway', 'run', '--port', String(this.status.port)];
+      const openclawDir = getOpenClawDir();
+      const entryScript = getOpenClawEntryPath();
+      
+      // Verify OpenClaw submodule exists
+      if (!isOpenClawSubmodulePresent()) {
+        reject(new Error(
+          'OpenClaw submodule not found. Please run: git submodule update --init'
+        ));
+        return;
+      }
+      
+      // Verify dependencies are installed
+      if (!isOpenClawInstalled()) {
+        reject(new Error(
+          'OpenClaw dependencies not installed. Please run: cd openclaw && pnpm install'
+        ));
+        return;
+      }
+      
+      let command: string;
+      let args: string[];
+      
+      // Check if OpenClaw is built (production mode) or use pnpm dev mode
+      if (isOpenClawBuilt() && existsSync(entryScript)) {
+        // Production mode: use openclaw.mjs directly
+        console.log('Starting Gateway in production mode (using dist)');
+        command = 'node';
+        args = [entryScript, 'gateway', 'run', '--port', String(this.status.port), '--allow-unconfigured'];
+      } else {
+        // Development mode: use pnpm gateway:dev which handles tsx compilation
+        console.log('Starting Gateway in development mode (using pnpm)');
+        command = 'pnpm';
+        args = ['run', 'dev', 'gateway', 'run', '--port', String(this.status.port), '--allow-unconfigured'];
+      }
+      
+      console.log(`Spawning Gateway: ${command} ${args.join(' ')}`);
+      console.log(`Working directory: ${openclawDir}`);
       
       this.process = spawn(command, args, {
+        cwd: openclawDir,
         stdio: ['ignore', 'pipe', 'pipe'],
         detached: false,
-        shell: true,
+        shell: process.platform === 'win32', // Use shell on Windows for pnpm
+        env: {
+          ...process.env,
+          // Skip channel auto-connect during startup for faster boot
+          OPENCLAW_SKIP_CHANNELS: '1',
+          CLAWDBOT_SKIP_CHANNELS: '1',
+        },
       });
       
       this.process.on('error', (error) => {

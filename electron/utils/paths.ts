@@ -70,3 +70,63 @@ export function getResourcesDir(): string {
 export function getPreloadPath(): string {
   return join(__dirname, '../preload/index.js');
 }
+
+/**
+ * Get OpenClaw submodule directory
+ */
+export function getOpenClawDir(): string {
+  if (app.isPackaged) {
+    return join(process.resourcesPath, 'openclaw');
+  }
+  return join(__dirname, '../../openclaw');
+}
+
+/**
+ * Get OpenClaw entry script path (openclaw.mjs)
+ */
+export function getOpenClawEntryPath(): string {
+  return join(getOpenClawDir(), 'openclaw.mjs');
+}
+
+/**
+ * Check if OpenClaw submodule exists
+ */
+export function isOpenClawSubmodulePresent(): boolean {
+  return existsSync(getOpenClawDir()) && existsSync(join(getOpenClawDir(), 'package.json'));
+}
+
+/**
+ * Check if OpenClaw is built (has dist folder with entry.js)
+ */
+export function isOpenClawBuilt(): boolean {
+  return existsSync(join(getOpenClawDir(), 'dist', 'entry.js'));
+}
+
+/**
+ * Check if OpenClaw has node_modules installed
+ */
+export function isOpenClawInstalled(): boolean {
+  return existsSync(join(getOpenClawDir(), 'node_modules'));
+}
+
+/**
+ * Get OpenClaw status for environment check
+ */
+export interface OpenClawStatus {
+  submoduleExists: boolean;
+  isInstalled: boolean;
+  isBuilt: boolean;
+  entryPath: string;
+  dir: string;
+}
+
+export function getOpenClawStatus(): OpenClawStatus {
+  const dir = getOpenClawDir();
+  return {
+    submoduleExists: isOpenClawSubmodulePresent(),
+    isInstalled: isOpenClawInstalled(),
+    isBuilt: isOpenClawBuilt(),
+    entryPath: getOpenClawEntryPath(),
+    dir,
+  };
+}
