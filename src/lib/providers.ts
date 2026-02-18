@@ -13,6 +13,7 @@ export const PROVIDER_TYPES = [
   'moonshot',
   'siliconflow',
   'ollama',
+  'copilot',
   'custom',
 ] as const;
 export type ProviderType = (typeof PROVIDER_TYPES)[number];
@@ -64,6 +65,7 @@ export const PROVIDER_TYPE_INFO: ProviderTypeInfo[] = [
   { id: 'moonshot', name: 'Moonshot (CN)', icon: '🌙', placeholder: 'sk-...', model: 'Kimi', requiresApiKey: true, defaultBaseUrl: 'https://api.moonshot.cn/v1', defaultModelId: 'kimi-k2.5' },
   { id: 'siliconflow', name: 'SiliconFlow (CN)', icon: '🌊', placeholder: 'sk-...', model: 'Multi-Model', requiresApiKey: true, defaultBaseUrl: 'https://api.siliconflow.cn/v1', defaultModelId: 'Pro/moonshotai/Kimi-K2.5' },
   { id: 'ollama', name: 'Ollama', icon: '🦙', placeholder: 'Not required', requiresApiKey: false, defaultBaseUrl: 'http://localhost:11434', showBaseUrl: true, showModelId: true, modelIdPlaceholder: 'qwen3:latest' },
+  { id: 'copilot', name: 'GitHub Copilot', icon: '🐙', placeholder: 'OAuth login', model: 'Copilot', requiresApiKey: false },
   { id: 'custom', name: 'Custom', icon: '⚙️', placeholder: 'API key...', requiresApiKey: true, showBaseUrl: true, showModelId: true, modelIdPlaceholder: 'your-provider/model-id' },
 ];
 
@@ -79,6 +81,15 @@ export function shouldInvertInDark(_type: ProviderType | string): boolean {
 
 /** Provider list shown in the Setup wizard */
 export const SETUP_PROVIDERS = PROVIDER_TYPE_INFO;
+
+/** Primary providers shown by default in setup (others are in "More" section) */
+export const SETUP_PRIMARY_PROVIDER_IDS: ProviderType[] = ['anthropic'];
+
+/** Providers that support OAuth / account login */
+export const OAUTH_PROVIDERS: ProviderType[] = ['anthropic', 'copilot'];
+
+/** "More" providers (collapsed by default) */
+export const SETUP_MORE_PROVIDER_IDS: ProviderType[] = ['openai', 'google', 'openrouter', 'copilot', 'moonshot', 'siliconflow', 'ollama', 'custom'];
 
 /** Get type info by provider type id */
 export function getProviderTypeInfo(type: ProviderType): ProviderTypeInfo | undefined {

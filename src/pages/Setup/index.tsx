@@ -102,7 +102,7 @@ const defaultSkills: DefaultSkill[] = [
   { id: 'terminal', name: 'Terminal', description: 'Shell command execution' },
 ];
 
-import { SETUP_PROVIDERS, type ProviderTypeInfo, getProviderIconUrl, shouldInvertInDark } from '@/lib/providers';
+import { SETUP_PROVIDERS, SETUP_MORE_PROVIDER_IDS, OAUTH_PROVIDERS, type ProviderTypeInfo, type ProviderType, getProviderIconUrl, shouldInvertInDark } from '@/lib/providers';
 import agentiIcon from '@/assets/logo.svg';
 
 // Use the shared provider registry for setup providers
@@ -697,6 +697,8 @@ interface ProviderContentProps {
   onConfiguredChange: (configured: boolean) => void;
 }
 
+type AuthTab = 'account' | 'apikey';
+
 function ProviderContent({
   providers,
   selectedProvider,
@@ -714,6 +716,11 @@ function ProviderContent({
   const [modelId, setModelId] = useState('');
   const [providerMenuOpen, setProviderMenuOpen] = useState(false);
   const providerMenuRef = useRef<HTMLDivElement | null>(null);
+  const [authTab, setAuthTab] = useState<AuthTab>('account');
+  const [moreProvidersOpen, setMoreProvidersOpen] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
+  const [deviceCode, setDeviceCode] = useState<string | null>(null);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   // On mount, try to restore previously configured provider
   useEffect(() => {
@@ -812,6 +819,35 @@ function ProviderContent({
     };
   }, [providerMenuOpen]);
 
+  // Auto-select Anthropic on mount if nothing is pre-selected
+  useEffect(() => {
+    if (!selectedProvider) {
+      onSelectProvider('anthropic');
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Listen for IPC events from OAuth flows
+  useEffect(() => {
+    const handleDeviceCode = (...args: unknown[]) => {
+      const data = args[1] as { code: string; uri: string } | undefined;
+      if (data?.code) setDeviceCode(data.code);
+    };
+    const handleLoginSuccess = (..._args: unknown[]) => {
+      setOauthLoading(false);
+      setLoginSuccess(true);
+      setDeviceCode(null);
+      onConfiguredChange(true);
+      toast.success(t('provider.loginSuccess'));
+      setTimeout(() => setLoginSuccess(false), 3000);
+    };
+    window.electron.ipcRenderer.on('auth:device-code', handleDeviceCode);
+    window.electron.ipcRenderer.on('auth:login-success', handleLoginSuccess);
+    return () => {
+      window.electron.ipcRenderer.off('auth:device-code', handleDeviceCode);
+      window.electron.ipcRenderer.off('auth:login-success', handleLoginSuccess);
+    };
+  }, [onConfiguredChange, t]);
+
   const selectedProviderData = providers.find((p) => p.id === selectedProvider);
   const selectedProviderIconUrl = selectedProviderData
     ? getProviderIconUrl(selectedProviderData.id)
@@ -819,6 +855,30 @@ function ProviderContent({
   const showBaseUrlField = selectedProviderData?.showBaseUrl ?? false;
   const showModelIdField = selectedProviderData?.showModelId ?? false;
   const requiresKey = selectedProviderData?.requiresApiKey ?? false;
+  const handleOAuthLogin = async () => {
+    if (!selectedProvider) return;
+    setOauthLoading(true);
+    setDeviceCode(null);
+    try {
+      let result: { success: boolean; error?: string };
+      if (selectedProvider === 'anthropic') {
+        result = await window.electron.ipcRenderer.invoke('auth:anthropic-oauth') as { success: boolean; error?: string };
+      } else if (selectedProvider === 'copilot') {
+        result = await window.electron.ipcRenderer.invoke('auth:github-copilot') as { success: boolean; error?: string };
+      } else {
+        result = { success: false, error: 'Unknown OAuth provider' };
+      }
+
+      if (!result.success) {
+        toast.error(result.error || t('provider.loginFailed'));
+        setOauthLoading(false);
+      }
+      // Success is handled by IPC event listener
+    } catch (err) {
+      toast.error(t('provider.loginFailed'));
+      setOauthLoading(false);
+    }
+  };
 
   const handleValidateAndSave = async () => {
     if (!selectedProvider) return;
@@ -827,7 +887,6 @@ function ProviderContent({
     setKeyValid(null);
 
     try {
-      // Validate key if the provider requires one and a key was entered
       if (requiresKey && apiKey) {
         const result = await window.electron.ipcRenderer.invoke(
           'provider:validateKey',
@@ -859,7 +918,6 @@ function ProviderContent({
             : `custom-${crypto.randomUUID()}`)
           : selectedProvider;
 
-      // Save provider config + API key, then set as default
       const saveResult = await window.electron.ipcRenderer.invoke(
         'provider:save',
         {
@@ -900,7 +958,6 @@ function ProviderContent({
     }
   };
 
-  // Can the user submit?
   const canSubmit =
     selectedProvider
     && (requiresKey ? apiKey.length > 0 : true)
@@ -912,193 +969,408 @@ function ProviderContent({
     onConfiguredChange(false);
     onApiKeyChange('');
     setKeyValid(null);
+    setLoginSuccess(false);
+    setDeviceCode(null);
+    setOauthLoading(false);
     setProviderMenuOpen(false);
+    setMoreProvidersOpen(false);
+    // Reset to account tab for OAuth providers
+    setAuthTab(OAUTH_PROVIDERS.includes(providerId as ProviderType) ? 'account' : 'apikey');
   };
 
+  // Providers for the "More" collapsible
+  const moreProviders = providers.filter((p) => SETUP_MORE_PROVIDER_IDS.includes(p.id as ProviderType));
+
   return (
-    <div className="space-y-6">
-      {/* Provider selector — dropdown */}
-      <div className="space-y-2">
-        <Label>{t('provider.label')}</Label>
-        <div className="relative" ref={providerMenuRef}>
-          <button
-            type="button"
-            aria-haspopup="listbox"
-            aria-expanded={providerMenuOpen}
-            onClick={() => setProviderMenuOpen((open) => !open)}
-            className={cn(
-              'w-full rounded-md border border-input bg-background px-3 py-2 text-sm',
-              'flex items-center justify-between gap-2',
-              'focus:outline-none focus:ring-2 focus:ring-ring'
+    <div className="space-y-5">
+      {/* ── Hero: Anthropic Claude (pre-selected) ── */}
+      {selectedProvider === 'anthropic' && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
+          <div className="text-center mb-2">
+            {selectedProviderIconUrl ? (
+              <img
+                src={selectedProviderIconUrl}
+                alt="Anthropic"
+                className={cn('h-10 w-10 mx-auto mb-3', shouldInvertInDark('anthropic') && 'dark:invert')}
+              />
+            ) : (
+              <div className="text-4xl mb-3">🤖</div>
             )}
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              {selectedProvider && selectedProviderData ? (
-                selectedProviderIconUrl ? (
-                  <img
-                    src={selectedProviderIconUrl}
-                    alt={selectedProviderData.name}
-                    className={cn('h-4 w-4 shrink-0', shouldInvertInDark(selectedProviderData.id) && 'dark:invert')}
-                  />
-                ) : (
-                  <span className="text-sm leading-none shrink-0">{selectedProviderData.icon}</span>
-                )
-              ) : (
-                <span className="text-xs text-muted-foreground shrink-0">—</span>
+            <h3 className="text-lg font-semibold">Anthropic Claude</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {t('provider.accountLogin.claudeDesc')}
+            </p>
+          </div>
+
+          {/* Auth Tab Switcher */}
+          <div className="flex rounded-lg bg-muted p-1 gap-1">
+            <button
+              type="button"
+              onClick={() => setAuthTab('account')}
+              className={cn(
+                'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                authTab === 'account'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
               )}
-              <span className={cn('truncate text-left', !selectedProvider && 'text-muted-foreground')}>
-                {selectedProviderData
-                  ? `${selectedProviderData.id === 'custom' ? t('settings:aiProviders.custom') : selectedProviderData.name}${selectedProviderData.model ? ` — ${selectedProviderData.model}` : ''}`
-                  : t('provider.selectPlaceholder')}
-              </span>
-            </div>
-            <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground shrink-0 transition-transform', providerMenuOpen && 'rotate-180')} />
-          </button>
-
-          {providerMenuOpen && (
-            <div
-              role="listbox"
-              className="absolute z-20 mt-1 w-full rounded-md border border-border bg-popover shadow-md max-h-64 overflow-auto"
             >
-              {providers.map((p) => {
-                const iconUrl = getProviderIconUrl(p.id);
-                const isSelected = selectedProvider === p.id;
+              {t('provider.tabs.accountLogin')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthTab('apikey')}
+              className={cn(
+                'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                authTab === 'apikey'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {t('provider.tabs.apiKey')}
+            </button>
+          </div>
 
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    role="option"
-                    aria-selected={isSelected}
-                    onClick={() => handleSelectProvider(p.id)}
-                    className={cn(
-                      'w-full px-3 py-2 text-left text-sm flex items-center justify-between gap-2',
-                      'hover:bg-accent transition-colors',
-                      isSelected && 'bg-accent/60'
-                    )}
+          {/* Account Login Tab */}
+          {authTab === 'account' && (
+            <motion.div
+              key="account-tab"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-3"
+            >
+              {loginSuccess ? (
+                <div className="text-center py-4">
+                  <CheckCircle2 className="h-10 w-10 text-green-400 mx-auto mb-2" />
+                  <p className="text-green-400 font-medium">{t('provider.loginSuccess')}</p>
+                </div>
+              ) : (
+                <>
+                  <Button
+                    onClick={handleOAuthLogin}
+                    disabled={oauthLoading}
+                    className="w-full h-12 text-base"
+                    size="lg"
                   >
-                    <div className="flex items-center gap-2 min-w-0">
-                      {iconUrl ? (
-                        <img
-                          src={iconUrl}
-                          alt={p.name}
-                          className={cn('h-4 w-4 shrink-0', shouldInvertInDark(p.id) && 'dark:invert')}
-                        />
-                      ) : (
-                        <span className="text-sm leading-none shrink-0">{p.icon}</span>
-                      )}
-                      <span className="truncate">{p.id === 'custom' ? t('settings:aiProviders.custom') : p.name}{p.model ? ` — ${p.model}` : ''}</span>
-                    </div>
-                    {isSelected && <Check className="h-4 w-4 text-primary shrink-0" />}
-                  </button>
-                );
-              })}
-            </div>
+                    {oauthLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    ) : null}
+                    {t('provider.accountLogin.claude')}
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    {t('provider.storedLocally')}
+                  </p>
+                </>
+              )}
+            </motion.div>
           )}
-        </div>
-      </div>
 
-      {/* Dynamic config fields based on selected provider */}
-      {selectedProvider && (
+          {/* API Key Tab */}
+          {authTab === 'apikey' && (
+            <motion.div
+              key="apikey-tab"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-3"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="apiKey">{t('provider.apiKey')}</Label>
+                <div className="relative">
+                  <Input
+                    id="apiKey"
+                    type={showKey ? 'text' : 'password'}
+                    placeholder={selectedProviderData?.placeholder}
+                    value={apiKey}
+                    onChange={(e) => {
+                      onApiKeyChange(e.target.value);
+                      onConfiguredChange(false);
+                      setKeyValid(null);
+                    }}
+                    autoComplete="off"
+                    className="pr-10 bg-background border-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowKey(!showKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <Button
+                onClick={handleValidateAndSave}
+                disabled={!apiKey || validating}
+                className="w-full"
+              >
+                {validating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {t('provider.validateSave')}
+              </Button>
+              {keyValid !== null && (
+                <p className={cn('text-sm text-center', keyValid ? 'text-green-400' : 'text-red-400')}>
+                  {keyValid ? `✓ ${t('provider.valid')}` : `✗ ${t('provider.invalid')}`}
+                </p>
+              )}
+              <p className="text-xs text-muted-foreground text-center">
+                {t('provider.storedLocally')}
+              </p>
+            </motion.div>
+          )}
+        </motion.div>
+      )}
+
+      {/* ── Non-Anthropic selected provider config ── */}
+      {selectedProvider && selectedProvider !== 'anthropic' && (
         <motion.div
           key={selectedProvider}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          {/* Base URL field (for siliconflow, ollama, custom) */}
-          {showBaseUrlField && (
-            <div className="space-y-2">
-              <Label htmlFor="baseUrl">{t('provider.baseUrl')}</Label>
-              <Input
-                id="baseUrl"
-                type="text"
-                placeholder="https://api.example.com/v1"
-                value={baseUrl}
-                onChange={(e) => {
-                  setBaseUrl(e.target.value);
-                  onConfiguredChange(false);
-                }}
-                autoComplete="off"
-                className="bg-background border-input"
-              />
+          <div className="flex items-center gap-3 mb-1">
+            <button
+              onClick={() => handleSelectProvider('anthropic')}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              {selectedProviderIconUrl ? (
+                <img src={selectedProviderIconUrl} alt={selectedProviderData?.name} className={cn('h-5 w-5', shouldInvertInDark(selectedProvider) && 'dark:invert')} />
+              ) : (
+                <span className="text-lg">{selectedProviderData?.icon}</span>
+              )}
+              <h3 className="text-lg font-semibold">
+                {selectedProviderData?.id === 'custom' ? t('settings:aiProviders.custom') : selectedProviderData?.name}
+              </h3>
             </div>
-          )}
+          </div>
 
-          {/* Model ID field (for siliconflow etc.) */}
-          {showModelIdField && (
-            <div className="space-y-2">
-              <Label htmlFor="modelId">{t('provider.modelId')}</Label>
-              <Input
-                id="modelId"
-                type="text"
-                placeholder={selectedProviderData?.modelIdPlaceholder || 'e.g. deepseek-ai/DeepSeek-V3'}
-                value={modelId}
-                onChange={(e) => {
-                  setModelId(e.target.value);
-                  onConfiguredChange(false);
-                }}
-                autoComplete="off"
-                className="bg-background border-input"
-              />
-              <p className="text-xs text-muted-foreground">
-                {t('provider.modelIdDesc')}
-              </p>
-            </div>
-          )}
-
-          {/* API Key field (hidden for ollama) */}
-          {requiresKey && (
-            <div className="space-y-2">
-              <Label htmlFor="apiKey">{t('provider.apiKey')}</Label>
-              <div className="relative">
-                <Input
-                  id="apiKey"
-                  type={showKey ? 'text' : 'password'}
-                  placeholder={selectedProviderData?.placeholder}
-                  value={apiKey}
-                  onChange={(e) => {
-                    onApiKeyChange(e.target.value);
-                    onConfiguredChange(false);
-                    setKeyValid(null);
-                  }}
-                  autoComplete="off"
-                  className="pr-10 bg-background border-input"
-                />
+          {/* GitHub Copilot — OAuth tabs */}
+          {selectedProvider === 'copilot' && (
+            <>
+              <div className="flex rounded-lg bg-muted p-1 gap-1">
                 <button
                   type="button"
-                  onClick={() => setShowKey(!showKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  onClick={() => setAuthTab('account')}
+                  className={cn(
+                    'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                    authTab === 'account'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
                 >
-                  {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {t('provider.tabs.accountLogin')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuthTab('apikey')}
+                  className={cn(
+                    'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                    authTab === 'apikey'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {t('provider.tabs.apiKey')}
                 </button>
               </div>
-            </div>
+
+              {authTab === 'account' && (
+                <motion.div key="copilot-account" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+                  {loginSuccess ? (
+                    <div className="text-center py-4">
+                      <CheckCircle2 className="h-10 w-10 text-green-400 mx-auto mb-2" />
+                      <p className="text-green-400 font-medium">{t('provider.loginSuccess')}</p>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground">{t('provider.accountLogin.githubDesc')}</p>
+                      <Button
+                        onClick={handleOAuthLogin}
+                        disabled={oauthLoading}
+                        className="w-full h-11"
+                      >
+                        {oauthLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                        {t('provider.accountLogin.github')}
+                      </Button>
+                      {deviceCode && (
+                        <div className="text-center p-3 rounded-lg bg-muted">
+                          <p className="text-sm text-muted-foreground mb-1">{t('provider.deviceCode')}</p>
+                          <p className="text-2xl font-mono font-bold tracking-widest">{deviceCode}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </motion.div>
+              )}
+            </>
           )}
 
-          {/* Validate & Save */}
-          <Button
-            onClick={handleValidateAndSave}
-            disabled={!canSubmit || validating}
-            className="w-full"
-          >
-            {validating ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : null}
-            {requiresKey ? t('provider.validateSave') : t('provider.save')}
-          </Button>
+          {/* Standard fields for non-OAuth or API key tab */}
+          {(selectedProvider !== 'copilot' || authTab === 'apikey') && (
+            <>
+              {showBaseUrlField && (
+                <div className="space-y-2">
+                  <Label htmlFor="baseUrl">{t('provider.baseUrl')}</Label>
+                  <Input
+                    id="baseUrl"
+                    type="text"
+                    placeholder="https://api.example.com/v1"
+                    value={baseUrl}
+                    onChange={(e) => { setBaseUrl(e.target.value); onConfiguredChange(false); }}
+                    autoComplete="off"
+                    className="bg-background border-input"
+                  />
+                </div>
+              )}
 
-          {keyValid !== null && (
-            <p className={cn('text-sm text-center', keyValid ? 'text-green-400' : 'text-red-400')}>
-              {keyValid ? `✓ ${t('provider.valid')}` : `✗ ${t('provider.invalid')}`}
-            </p>
+              {showModelIdField && (
+                <div className="space-y-2">
+                  <Label htmlFor="modelId">{t('provider.modelId')}</Label>
+                  <Input
+                    id="modelId"
+                    type="text"
+                    placeholder={selectedProviderData?.modelIdPlaceholder || 'e.g. deepseek-ai/DeepSeek-V3'}
+                    value={modelId}
+                    onChange={(e) => { setModelId(e.target.value); onConfiguredChange(false); }}
+                    autoComplete="off"
+                    className="bg-background border-input"
+                  />
+                  <p className="text-xs text-muted-foreground">{t('provider.modelIdDesc')}</p>
+                </div>
+              )}
+
+              {requiresKey && (
+                <div className="space-y-2">
+                  <Label htmlFor="apiKey">{t('provider.apiKey')}</Label>
+                  <div className="relative">
+                    <Input
+                      id="apiKey"
+                      type={showKey ? 'text' : 'password'}
+                      placeholder={selectedProviderData?.placeholder}
+                      value={apiKey}
+                      onChange={(e) => {
+                        onApiKeyChange(e.target.value);
+                        onConfiguredChange(false);
+                        setKeyValid(null);
+                      }}
+                      autoComplete="off"
+                      className="pr-10 bg-background border-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowKey(!showKey)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <Button
+                onClick={handleValidateAndSave}
+                disabled={!canSubmit || validating}
+                className="w-full"
+              >
+                {validating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {requiresKey ? t('provider.validateSave') : t('provider.save')}
+              </Button>
+
+              {keyValid !== null && (
+                <p className={cn('text-sm text-center', keyValid ? 'text-green-400' : 'text-red-400')}>
+                  {keyValid ? `✓ ${t('provider.valid')}` : `✗ ${t('provider.invalid')}`}
+                </p>
+              )}
+
+              <p className="text-xs text-muted-foreground text-center">
+                {t('provider.storedLocally')}
+              </p>
+            </>
           )}
-
-          <p className="text-sm text-muted-foreground text-center">
-            {t('provider.storedLocally')}
-          </p>
         </motion.div>
       )}
+
+      {/* ── More Providers (collapsible) ── */}
+      <div className="pt-2">
+        <button
+          type="button"
+          onClick={() => setMoreProvidersOpen((o) => !o)}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto"
+        >
+          <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', moreProvidersOpen && 'rotate-180')} />
+          {t('provider.moreProviders')}
+        </button>
+
+        <AnimatePresence>
+          {moreProvidersOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                {moreProviders.map((p) => {
+                  const iconUrl = getProviderIconUrl(p.id);
+                  const isSelected = selectedProvider === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => handleSelectProvider(p.id)}
+                      className={cn(
+                        'p-3 rounded-lg text-left text-sm transition-all',
+                        'hover:bg-accent border',
+                        isSelected
+                          ? 'border-primary bg-accent/60'
+                          : 'border-transparent bg-muted/50'
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        {iconUrl ? (
+                          <img src={iconUrl} alt={p.name} className={cn('h-4 w-4 shrink-0', shouldInvertInDark(p.id) && 'dark:invert')} />
+                        ) : (
+                          <span className="text-sm shrink-0">{p.icon}</span>
+                        )}
+                        <span className="truncate font-medium">
+                          {p.id === 'custom' ? t('settings:aiProviders.custom') : p.name}
+                        </span>
+                      </div>
+                      {p.model && <p className="text-xs text-muted-foreground mt-0.5 ml-6">{p.model}</p>}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ── No account? Sign up link ── */}
+      <div className="text-center pt-1">
+        <p className="text-xs text-muted-foreground">
+          {t('provider.noAccount')}{' '}
+          <button
+            type="button"
+            onClick={() => {
+              if (window.electron?.openExternal) {
+                window.electron.openExternal('https://claude.ai');
+              } else {
+                window.open('https://claude.ai', '_blank');
+              }
+            }}
+            className="text-primary hover:underline"
+          >
+            {t('provider.noAccountDesc')}
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
