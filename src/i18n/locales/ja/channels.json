@@ -14,8 +14,6 @@
     "showAll": "すべて表示",
     "pluginBadge": "プラグイン",
     "toast": {
-        "whatsappConnected": "WhatsApp が正常に接続されました",
-        "whatsappFailed": "WhatsApp 接続に失敗しました: {{error}}",
         "channelSaved": "チャンネル {{name}} が保存されました",
         "channelConnecting": "{{name}} に接続中...",
         "restartManual": "ゲートウェイを手動で再起動してください",
@@ -97,15 +95,6 @@
                 "OAuth2 → URL Generator で: \"bot\" + \"applications.commands\" を選択し、メッセージ権限を追加します",
                 "生成された URL を使用してボットをサーバーに招待します",
                 "以下にボットトークンを貼り付けます"
-            ]
-        },
-        "whatsapp": {
-            "description": "QRコードをスキャンして WhatsApp に接続します（電話番号は不要です）",
-            "instructions": [
-                "携帯電話で WhatsApp を開きます",
-                "設定 > リンクされたデバイス > デバイスをリンク に移動します",
-                "以下に表示されるQRコードをスキャンします",
-                "システムが自動的に電話番号を識別します"
             ]
         },
         "signal": {

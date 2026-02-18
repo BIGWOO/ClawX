@@ -14,8 +14,6 @@
     "showAll": "顯示全部",
     "pluginBadge": "外掛",
     "toast": {
-        "whatsappConnected": "WhatsApp 連線成功",
-        "whatsappFailed": "WhatsApp 連線失敗：{{error}}",
         "channelSaved": "頻道 {{name}} 已儲存",
         "channelConnecting": "正在連接 {{name}}...",
         "restartManual": "請手動重新啟動閘道",
@@ -99,16 +97,6 @@
                 "在 OAuth2 → URL Generator：選擇「bot」+「applications.commands」，新增訊息權限",
                 "使用產生的 URL 邀請機器人加入您的伺服器",
                 "在下方貼上機器人權杖"
-            ]
-        },
-        "whatsapp": {
-            "description": "透過掃描 QR Code 連接 WhatsApp（無需手機號碼）",
-            "docsUrl": "https://docs.openclaw.ai/channels/whatsapp",
-            "instructions": [
-                "在手機上開啟 WhatsApp",
-                "前往設定 > 已連結裝置 > 連結裝置",
-                "掃描下方顯示的 QR Code",
-                "系統將自動識別您的手機號碼"
             ]
         },
         "signal": {

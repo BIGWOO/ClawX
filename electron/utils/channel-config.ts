@@ -85,7 +85,7 @@ export function saveChannelConfig(
 ): void {
     const currentConfig = readOpenClawConfig();
 
-    // Plugin-based channels (e.g. WhatsApp) go under plugins.entries, not channels
+    // Plugin-based channels go under plugins.entries, not channels
     if (PLUGIN_CHANNELS.includes(channelType)) {
         if (!currentConfig.plugins) {
             currentConfig.plugins = {};
@@ -272,7 +272,7 @@ export function deleteChannelConfig(channelType: string): void {
         writeOpenClawConfig(currentConfig);
         console.log(`Deleted channel config for ${channelType}`);
     } else if (PLUGIN_CHANNELS.includes(channelType)) {
-        // Handle plugin channels (like whatsapp)
+        // Handle plugin channels
         if (currentConfig.plugins?.entries?.[channelType]) {
             delete currentConfig.plugins.entries[channelType];
 

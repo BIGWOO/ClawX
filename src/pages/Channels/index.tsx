@@ -401,7 +401,7 @@ function AddChannelDialog({ selectedType, onSelectType, onClose, onChannelAdded 
     return () => { cancelled = true; };
   }, [selectedType]);
 
-  // WhatsApp QR login removed
+  // QR-based login removed
 
   const handleValidate = async () => {
     if (!selectedType) return;

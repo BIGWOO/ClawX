@@ -20,7 +20,7 @@ import { getApiKey, getDefaultProvider, getProvider } from '../utils/secure-stor
 import { getProviderEnvVar, getKeyableProviderTypes } from '../utils/provider-registry';
 import { GatewayEventType, JsonRpcNotification, isNotification, isResponse } from './protocol';
 import { logger } from '../utils/logger';
-// uv-env and uv-setup removed
+// Runtime environment managed by gateway
 
 /**
  * Gateway connection status

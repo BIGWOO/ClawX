@@ -14,8 +14,6 @@
     "showAll": "Show All",
     "pluginBadge": "Plugin",
     "toast": {
-        "whatsappConnected": "WhatsApp connected successfully",
-        "whatsappFailed": "WhatsApp connection failed: {{error}}",
         "channelSaved": "Channel {{name}} saved",
         "channelConnecting": "Connecting to {{name}}...",
         "restartManual": "Please restart the gateway manually",
@@ -99,16 +97,6 @@
                 "In OAuth2 → URL Generator: select \"bot\" + \"applications.commands\", add message permissions",
                 "Invite the bot to your server using the generated URL",
                 "Paste the bot token below"
-            ]
-        },
-        "whatsapp": {
-            "description": "Connect WhatsApp by scanning a QR code (no phone number required)",
-            "docsUrl": "https://docs.openclaw.ai/channels/whatsapp",
-            "instructions": [
-                "Open WhatsApp on your phone",
-                "Go to Settings > Linked Devices > Link a Device",
-                "Scan the QR code shown below",
-                "The system will automatically identify your phone number"
             ]
         },
         "signal": {

@@ -154,7 +154,7 @@ export class GatewayClient {
   }
 
   /**
-   * Get QR code for channel connection (e.g., WhatsApp)
+   * Get QR code for channel connection
    */
   async getChannelQRCode(channelType: ChannelType): Promise<string> {
     return this.manager.rpc<string>('channels.getQRCode', { channelType });
