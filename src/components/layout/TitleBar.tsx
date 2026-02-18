@@ -5,7 +5,7 @@
  */
 import { useState, useEffect } from 'react';
 import { Minus, Square, X, Copy } from 'lucide-react';
-import logoSvg from '@/assets/logo.svg';
+import logoDark from '@/assets/logo-dark.png';
 
 const isMac = window.electron?.platform === 'darwin';
 
@@ -48,7 +48,7 @@ function WindowsTitleBar() {
     <div className="drag-region flex h-10 shrink-0 items-center justify-between border-b bg-background">
       {/* Left: Icon + App Name */}
       <div className="no-drag flex items-center gap-2 pl-3">
-        <img src={logoSvg} alt="Agent-i" className="h-5 w-auto" />
+        <img src={logoDark} alt="Agent-i" className="h-5 w-auto" />
         <span className="text-xs font-medium text-muted-foreground select-none">
           Agent-i
         </span>

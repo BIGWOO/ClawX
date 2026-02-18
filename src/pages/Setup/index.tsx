@@ -109,7 +109,7 @@ const defaultSkills: DefaultSkill[] = [
 ];
 
 import { SETUP_PROVIDERS, SETUP_MORE_PROVIDER_IDS, OAUTH_PROVIDERS, type ProviderTypeInfo, type ProviderType, getProviderIconUrl, shouldInvertInDark } from '@/lib/providers';
-import agentiIcon from '@/assets/logo.svg';
+import agentiIcon from '@/assets/logo-light.png';
 
 // Use the shared provider registry for setup providers
 const providers = SETUP_PROVIDERS;
