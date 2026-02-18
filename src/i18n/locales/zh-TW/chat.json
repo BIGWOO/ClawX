@@ -1,0 +1,19 @@
+{
+    "gatewayNotRunning": "閘道未執行",
+    "gatewayRequired": "OpenClaw 閘道需要執行才能使用聊天。它將自動啟動，或者您可以從設定中啟動。",
+    "welcome": {
+        "title": "Agent-i 聊天",
+        "subtitle": "您的 AI 助理已就緒。在下方開始對話。",
+        "askQuestions": "提問",
+        "askQuestionsDesc": "取得任何主題的答案",
+        "creativeTasks": "創意任務",
+        "creativeTasksDesc": "寫作、腦力激盪、創意發想"
+    },
+    "noLogs": "（目前沒有記錄）",
+    "toolbar": {
+        "newSession": "新對話",
+        "refresh": "重新整理聊天",
+        "showThinking": "顯示思考過程",
+        "hideThinking": "隱藏思考過程"
+    }
+}

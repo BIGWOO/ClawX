@@ -1,0 +1,264 @@
+{
+    "title": "訊息頻道",
+    "subtitle": "管理您的訊息頻道和連線",
+    "refresh": "重新整理",
+    "addChannel": "新增頻道",
+    "stats": {
+        "total": "頻道總數",
+        "connected": "已連線",
+        "disconnected": "未連線"
+    },
+    "gatewayWarning": "閘道服務未執行，頻道無法連線。",
+    "available": "可用頻道",
+    "availableDesc": "連接一個新的頻道",
+    "showAll": "顯示全部",
+    "pluginBadge": "外掛",
+    "toast": {
+        "whatsappConnected": "WhatsApp 連線成功",
+        "whatsappFailed": "WhatsApp 連線失敗：{{error}}",
+        "channelSaved": "頻道 {{name}} 已儲存",
+        "channelConnecting": "正在連接 {{name}}...",
+        "restartManual": "請手動重新啟動閘道",
+        "configFailed": "設定失敗：{{error}}"
+    },
+    "dialog": {
+        "updateTitle": "更新 {{name}}",
+        "configureTitle": "設定 {{name}}",
+        "addTitle": "新增頻道",
+        "existingDesc": "更新您現有的設定",
+        "selectDesc": "選擇要設定的頻道類型",
+        "qrCode": "QR Code",
+        "token": "權杖",
+        "scanQR": "使用 {{name}} 掃描此 QR Code",
+        "refreshCode": "重新整理代碼",
+        "loadingConfig": "正在載入設定...",
+        "existingHint": "您已設定過此頻道",
+        "howToConnect": "如何連接",
+        "viewDocs": "檢視文件",
+        "channelName": "頻道名稱",
+        "channelNamePlaceholder": "我的 {{name}}",
+        "credentialsVerified": "憑證已驗證",
+        "validationFailed": "驗證失敗",
+        "warnings": "警告",
+        "back": "返回",
+        "validating": "正在驗證...",
+        "validateConfig": "驗證設定",
+        "generatingQR": "正在產生 QR Code...",
+        "validatingAndSaving": "正在驗證並儲存...",
+        "generateQRCode": "產生 QR Code",
+        "updateAndReconnect": "更新並重新連線",
+        "saveAndConnect": "儲存並連線",
+        "envVar": "環境變數：{{var}}"
+    },
+    "meta": {
+        "telegram": {
+            "description": "使用 @BotFather 提供的機器人權杖連接 Telegram",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/telegram",
+            "fields": {
+                "botToken": {
+                    "label": "機器人權杖",
+                    "placeholder": "123456:ABC-DEF..."
+                },
+                "allowedUsers": {
+                    "label": "允許的使用者 ID",
+                    "placeholder": "例如 123456789, 987654321",
+                    "description": "允許使用機器人的使用者 ID 清單（以逗號分隔）。基於安全考量，此項為必填。"
+                }
+            },
+            "instructions": [
+                "開啟 Telegram 並搜尋 @BotFather",
+                "傳送 /newbot 並按照說明操作",
+                "複製提供的機器人權杖",
+                "在下方貼上權杖",
+                "從 @userinfobot 取得您的使用者 ID 並貼在下方"
+            ]
+        },
+        "discord": {
+            "description": "使用開發者入口提供的機器人權杖連接 Discord",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/discord#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E4%BD%A0%E7%9A%84%E6%9C%BA%E5%99%A8%E4%BA%BA",
+            "fields": {
+                "token": {
+                    "label": "機器人權杖",
+                    "placeholder": "您的 Discord 機器人權杖"
+                },
+                "guildId": {
+                    "label": "伺服器 ID",
+                    "placeholder": "例如 123456789012345678",
+                    "description": "限制機器人僅在特定伺服器運作。右鍵點擊伺服器 → 複製伺服器 ID。"
+                },
+                "channelId": {
+                    "label": "頻道 ID（選填）",
+                    "placeholder": "例如 123456789012345678",
+                    "description": "限制機器人僅在特定頻道運作。右鍵點擊頻道 → 複製頻道 ID。"
+                }
+            },
+            "instructions": [
+                "前往 Discord 開發者入口 → Applications → New Application",
+                "在 Bot 區段：新增 Bot，然後複製 Bot Token",
+                "在 Bot → Privileged Gateway Intents 中啟用 Message Content Intent 和 Server Members Intent",
+                "在 OAuth2 → URL Generator：選擇「bot」+「applications.commands」，新增訊息權限",
+                "使用產生的 URL 邀請機器人加入您的伺服器",
+                "在下方貼上機器人權杖"
+            ]
+        },
+        "whatsapp": {
+            "description": "透過掃描 QR Code 連接 WhatsApp（無需手機號碼）",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/whatsapp",
+            "instructions": [
+                "在手機上開啟 WhatsApp",
+                "前往設定 > 已連結裝置 > 連結裝置",
+                "掃描下方顯示的 QR Code",
+                "系統將自動識別您的手機號碼"
+            ]
+        },
+        "signal": {
+            "description": "使用 signal-cli 連接 Signal",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/signal",
+            "fields": {
+                "phoneNumber": {
+                    "label": "手機號碼",
+                    "placeholder": "+1234567890"
+                }
+            },
+            "instructions": [
+                "在您的系統上安裝 signal-cli",
+                "註冊或連結您的手機號碼",
+                "在下方輸入您的手機號碼"
+            ]
+        },
+        "feishu": {
+            "description": "透過 WebSocket 連接飛書/Lark 機器人",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/feishu#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%88%9B%E5%BB%BA%E9%A3%9E%E4%B9%A6%E5%BA%94%E7%94%A8",
+            "fields": {
+                "appId": {
+                    "label": "應用程式 ID (App ID)",
+                    "placeholder": "cli_xxxxxx"
+                },
+                "appSecret": {
+                    "label": "應用程式密鑰 (App Secret)",
+                    "placeholder": "您的應用程式密鑰"
+                }
+            },
+            "instructions": [
+                "閱讀文件，前往飛書開放平台",
+                "建立一個新應用程式",
+                "取得 App ID 和 App Secret",
+                "設定事件訂閱",
+                "注意：目前 OpenClaw 文件中未提及，但請務必在權限管理中新增 contact:contact.base:readonly **應用程式權限**，否則無法正常使用"
+            ]
+        },
+        "imessage": {
+            "description": "透過 BlueBubbles (macOS) 連接 iMessage",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/bluebubbles",
+            "fields": {
+                "serverUrl": {
+                    "label": "BlueBubbles 伺服器位址",
+                    "placeholder": "http://localhost:1234"
+                },
+                "password": {
+                    "label": "伺服器密碼",
+                    "placeholder": "您的伺服器密碼"
+                }
+            },
+            "instructions": [
+                "在您的 Mac 上安裝 BlueBubbles 伺服器",
+                "記下伺服器位址和密碼",
+                "在下方輸入連線詳情"
+            ]
+        },
+        "matrix": {
+            "description": "連接到 Matrix 協定",
+            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/matrix",
+            "fields": {
+                "homeserver": {
+                    "label": "Homeserver 位址",
+                    "placeholder": "https://matrix.org"
+                },
+                "accessToken": {
+                    "label": "存取權杖 (Access Token)",
+                    "placeholder": "您的存取權杖"
+                }
+            },
+            "instructions": [
+                "建立一個 Matrix 帳號或使用現有帳號",
+                "從您的用戶端取得存取權杖",
+                "在下方輸入 Homeserver 位址和權杖"
+            ]
+        },
+        "line": {
+            "description": "連接 LINE Messaging API",
+            "docsUrl": "https://docs.openclaw.ai/channels/line",
+            "fields": {
+                "channelAccessToken": {
+                    "label": "頻道存取權杖",
+                    "placeholder": "您的 LINE 頻道存取權杖"
+                },
+                "channelSecret": {
+                    "label": "頻道密鑰",
+                    "placeholder": "您的 LINE 頻道密鑰"
+                }
+            },
+            "instructions": [
+                "前往 LINE 開發者主控台",
+                "建立一個 Messaging API 頻道",
+                "取得頻道存取權杖和密鑰"
+            ]
+        },
+        "msteams": {
+            "description": "透過 Bot Framework 連接 Microsoft Teams",
+            "docsUrl": "https://docs.openclaw.ai/channels/msteams",
+            "fields": {
+                "appId": {
+                    "label": "應用程式 ID",
+                    "placeholder": "您的 Microsoft 應用程式 ID"
+                },
+                "appPassword": {
+                    "label": "應用程式密碼",
+                    "placeholder": "您的 Microsoft 應用程式密碼"
+                }
+            },
+            "instructions": [
+                "前往 Azure 入口",
+                "註冊一個新的 Bot 應用程式",
+                "取得應用程式 ID 並建立密碼",
+                "設定 Teams 頻道"
+            ]
+        },
+        "googlechat": {
+            "description": "透過 Webhook 連接 Google Chat",
+            "docsUrl": "https://docs.openclaw.ai/channels/googlechat",
+            "fields": {
+                "serviceAccountKey": {
+                    "label": "服務帳號 JSON 路徑",
+                    "placeholder": "/path/to/service-account.json"
+                }
+            },
+            "instructions": [
+                "建立 Google Cloud 專案",
+                "啟用 Google Chat API",
+                "建立服務帳號",
+                "下載 JSON 密鑰檔案"
+            ]
+        },
+        "mattermost": {
+            "description": "透過 Bot API 連接 Mattermost",
+            "docsUrl": "https://docs.openclaw.ai/channels/mattermost",
+            "fields": {
+                "serverUrl": {
+                    "label": "伺服器位址",
+                    "placeholder": "https://your-mattermost.com"
+                },
+                "botToken": {
+                    "label": "機器人存取權杖",
+                    "placeholder": "您的機器人存取權杖"
+                }
+            },
+            "instructions": [
+                "前往 Mattermost 整合",
+                "建立一個新的 Bot 帳號",
+                "複製存取權杖"
+            ]
+        }
+    },
+    "viewDocs": "檢視文件"
+}

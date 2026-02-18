@@ -1,0 +1,136 @@
+{
+    "title": "設定",
+    "subtitle": "設定您的 Agent-i 體驗",
+    "appearance": {
+        "title": "外觀",
+        "description": "自訂外觀和風格",
+        "theme": "主題",
+        "light": "淺色",
+        "dark": "深色",
+        "system": "跟隨系統",
+        "language": "語言"
+    },
+    "aiProviders": {
+        "title": "AI 模型供應商",
+        "description": "設定 AI 模型供應商和 API 密鑰",
+        "add": "新增供應商",
+        "custom": "自訂",
+        "notRequired": "非必填",
+        "empty": {
+            "title": "尚未設定供應商",
+            "desc": "新增 AI 供應商以開始使用 Agent-i",
+            "cta": "新增您的第一個供應商"
+        },
+        "dialog": {
+            "title": "新增 AI 供應商",
+            "desc": "設定新的 AI 模型供應商",
+            "displayName": "顯示名稱",
+            "apiKey": "API 密鑰",
+            "apiKeyStored": "您的 API 密鑰儲存在本機上。",
+            "baseUrl": "基礎 URL",
+            "modelId": "模型 ID",
+            "cancel": "取消",
+            "change": "更換供應商",
+            "add": "新增供應商",
+            "save": "儲存",
+            "validate": "驗證"
+        },
+        "card": {
+            "default": "預設",
+            "configured": "已設定",
+            "noKey": "未設定 API 密鑰",
+            "setDefault": "設為預設",
+            "editKey": "編輯 API 密鑰",
+            "delete": "刪除供應商"
+        },
+        "toast": {
+            "added": "供應商新增成功",
+            "failedAdd": "新增供應商失敗",
+            "deleted": "供應商已刪除",
+            "failedDelete": "刪除供應商失敗",
+            "defaultUpdated": "預設供應商已更新",
+            "failedDefault": "設定預設失敗",
+            "updated": "供應商已更新",
+            "failedUpdate": "更新供應商失敗",
+            "invalidKey": "無效的 API 密鑰",
+            "modelRequired": "需要模型 ID"
+        }
+    },
+    "gateway": {
+        "title": "閘道",
+        "description": "OpenClaw 閘道設定",
+        "status": "狀態",
+        "port": "連接埠",
+        "logs": "記錄",
+        "appLogs": "應用程式記錄",
+        "openFolder": "開啟資料夾",
+        "autoStart": "自動啟動閘道",
+        "autoStartDesc": "Agent-i 啟動時自動啟動閘道"
+    },
+    "updates": {
+        "title": "更新",
+        "description": "保持 Agent-i 為最新版本",
+        "autoCheck": "自動檢查更新",
+        "autoCheckDesc": "啟動時檢查更新",
+        "autoDownload": "自動下載更新",
+        "autoDownloadDesc": "在背景下載更新",
+        "status": {
+            "checking": "正在檢查更新...",
+            "downloading": "正在下載更新...",
+            "available": "可用更新：v{{version}}",
+            "downloaded": "準備安裝：v{{version}}",
+            "failed": "檢查更新失敗",
+            "latest": "您已擁有最新版本",
+            "check": "檢查更新以取得最新功能"
+        },
+        "action": {
+            "checking": "檢查中...",
+            "downloading": "下載中...",
+            "download": "下載更新",
+            "install": "安裝並重新啟動",
+            "retry": "重試",
+            "check": "檢查更新"
+        },
+        "currentVersion": "目前版本",
+        "whatsNew": "更新內容：",
+        "errorDetails": "錯誤詳情：",
+        "help": "更新將在背景下載，並在您重新啟動應用程式時安裝。"
+    },
+    "advanced": {
+        "title": "進階",
+        "description": "進階選項",
+        "devMode": "開發者模式",
+        "devModeDesc": "顯示開發者工具和捷徑"
+    },
+    "developer": {
+        "title": "開發者",
+        "description": "開發者進階選項",
+        "console": "OpenClaw 主控台",
+        "consoleDesc": "存取原生 OpenClaw 管理介面",
+        "openConsole": "開啟開發者主控台",
+        "consoleNote": "使用注入的閘道權杖開啟主控台",
+        "gatewayToken": "閘道權杖",
+        "gatewayTokenDesc": "如果需要，將此貼到主控台設定中",
+        "tokenUnavailable": "權杖不可用",
+        "tokenCopied": "閘道權杖已複製",
+        "cli": "OpenClaw CLI",
+        "cliDesc": "複製命令以執行 OpenClaw，無需修改 PATH。",
+        "cliPowershell": "PowerShell 命令。",
+        "cmdUnavailable": "命令不可用",
+        "cmdCopied": "CLI 命令已複製",
+        "installCmd": "安裝「openclaw」命令",
+        "installCmdDesc": "安裝 ~/.local/bin/openclaw（無需管理員權限）",
+        "installTitle": "安裝 OpenClaw 命令",
+        "installMessage": "安裝「openclaw」命令？",
+        "installDetail": "這將建立 ~/.local/bin/openclaw。請確保 ~/.local/bin 在您的 PATH 中。"
+    },
+    "about": {
+        "title": "關於",
+        "appName": "Agent-i",
+        "tagline": "圖形化 AI 助理",
+        "basedOn": "基於 OpenClaw",
+        "version": "版本 {{version}}",
+        "docs": "官網",
+        "github": "GitHub"
+    }
+}

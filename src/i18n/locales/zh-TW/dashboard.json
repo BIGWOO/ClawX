@@ -1,0 +1,28 @@
+{
+    "gateway": "閘道",
+    "channels": "頻道",
+    "skills": "技能",
+    "uptime": "執行時間",
+    "port": "連接埠：{{port}}",
+    "pid": "PID：{{pid}}",
+    "connectedOf": "{{connected}} / {{total}} 已連線",
+    "enabledOf": "{{enabled}} / {{total}} 已啟用",
+    "sinceRestart": "自上次重新啟動",
+    "gatewayNotRunning": "閘道未執行",
+    "quickActions": {
+        "title": "快速操作",
+        "description": "常用任務和捷徑",
+        "addChannel": "新增頻道",
+        "browseSkills": "瀏覽技能",
+        "openChat": "開啟聊天",
+        "settings": "設定",
+        "devConsole": "開發者主控台"
+    },
+    "connectedChannels": "已連線頻道",
+    "noChannels": "尚未設定頻道",
+    "addFirst": "新增您的第一個頻道",
+    "activeSkills": "已啟用技能",
+    "noSkills": "尚未啟用技能",
+    "enableSome": "啟用一些技能",
+    "more": "+{{count}} 更多"
+}

@@ -1,0 +1,70 @@
+{
+    "title": "技能",
+    "subtitle": "瀏覽和管理 AI 能力",
+    "refresh": "重新整理",
+    "openFolder": "開啟技能資料夾",
+    "gatewayWarning": "閘道未執行。沒有運作中的閘道，無法載入技能。",
+    "tabs": {
+        "installed": "已安裝",
+        "marketplace": "市集"
+    },
+    "filter": {
+        "all": "全部 ({{count}})",
+        "builtIn": "內建 ({{count}})",
+        "marketplace": "市集 ({{count}})"
+    },
+    "search": "搜尋技能...",
+    "searchMarketplace": "搜尋市集...",
+    "searchButton": "搜尋",
+    "noSkills": "未找到技能",
+    "noSkillsSearch": "嘗試不同的搜尋關鍵字",
+    "noSkillsAvailable": "目前沒有可用技能",
+    "detail": {
+        "info": "資訊",
+        "config": "設定",
+        "description": "說明",
+        "version": "版本",
+        "author": "作者",
+        "source": "來源",
+        "coreSystem": "核心系統",
+        "bundled": "內建",
+        "userInstalled": "使用者安裝",
+        "enabled": "已啟用",
+        "disabled": "已停用",
+        "apiKey": "API 密鑰",
+        "apiKeyPlaceholder": "輸入 API 密鑰（選填）",
+        "apiKeyDesc": "此技能的主要 API 密鑰。如果不需要或在他處設定，請留空。",
+        "envVars": "環境變數",
+        "addVariable": "新增變數",
+        "noEnvVars": "尚未設定環境變數。",
+        "keyPlaceholder": "鍵名（例如 BASE_URL）",
+        "valuePlaceholder": "值",
+        "envNote": "注意：鍵名為空的列將在儲存時自動移除。",
+        "saving": "儲存中...",
+        "saveConfig": "儲存設定",
+        "configSaved": "設定已儲存",
+        "openManual": "開啟手冊",
+        "configurable": "可設定"
+    },
+    "toast": {
+        "enabled": "技能已啟用",
+        "disabled": "技能已停用",
+        "installed": "技能已安裝並啟用",
+        "uninstalled": "技能已成功解除安裝",
+        "openedEditor": "已在編輯器中開啟",
+        "failedEditor": "無法開啟編輯器",
+        "failedSave": "儲存設定失敗",
+        "failedOpenFolder": "無法開啟技能資料夾",
+        "failedInstall": "安裝失敗",
+        "failedUninstall": "解除安裝失敗",
+        "failedFolderNotFound": "技能資料夾尚不存在，請先安裝一個技能。"
+    },
+    "marketplace": {
+        "title": "市集",
+        "securityNote": "安裝前請點擊技能卡片，在 ClawHub 上檢視其文件和安全資訊。",
+        "searching": "正在搜尋 ClawHub...",
+        "noResults": "未找到符合的技能。",
+        "emptyPrompt": "搜尋新技能以擴充您的能力。",
+        "searchError": "ClawHub 搜尋失敗。請檢查您的連線或安裝。"
+    }
+}

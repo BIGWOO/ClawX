@@ -21,6 +21,16 @@ import zhSkills from './locales/zh/skills.json';
 import zhCron from './locales/zh/cron.json';
 import zhSetup from './locales/zh/setup.json';
 
+// ZH-TW
+import zhTWCommon from './locales/zh-TW/common.json';
+import zhTWSettings from './locales/zh-TW/settings.json';
+import zhTWDashboard from './locales/zh-TW/dashboard.json';
+import zhTWChat from './locales/zh-TW/chat.json';
+import zhTWChannels from './locales/zh-TW/channels.json';
+import zhTWSkills from './locales/zh-TW/skills.json';
+import zhTWCron from './locales/zh-TW/cron.json';
+import zhTWSetup from './locales/zh-TW/setup.json';
+
 // JA
 import jaCommon from './locales/ja/common.json';
 import jaSettings from './locales/ja/settings.json';
@@ -33,7 +43,8 @@ import jaSetup from './locales/ja/setup.json';
 
 export const SUPPORTED_LANGUAGES = [
     { code: 'en', label: 'English' },
-    { code: 'zh', label: '中文' },
+    { code: 'zh-TW', label: '繁體中文' },
+    { code: 'zh', label: '简体中文' },
     { code: 'ja', label: '日本語' },
 ] as const;
 
@@ -60,6 +71,16 @@ const resources = {
         cron: zhCron,
         setup: zhSetup,
     },
+    'zh-TW': {
+        common: zhTWCommon,
+        settings: zhTWSettings,
+        dashboard: zhTWDashboard,
+        chat: zhTWChat,
+        channels: zhTWChannels,
+        skills: zhTWSkills,
+        cron: zhTWCron,
+        setup: zhTWSetup,
+    },
     ja: {
         common: jaCommon,
         settings: jaSettings,
@@ -76,7 +97,7 @@ i18n
     .use(initReactI18next)
     .init({
         resources,
-        lng: 'en', // will be overridden by settings store
+        lng: 'zh-TW', // will be overridden by settings store
         fallbackLng: 'en',
         defaultNS: 'common',
         ns: ['common', 'settings', 'dashboard', 'chat', 'channels', 'skills', 'cron', 'setup'],
