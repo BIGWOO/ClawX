@@ -1552,7 +1552,7 @@ function SetupChannelContent() {
                   // ignore
                 }
               }}
-              className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              className="flex items-center gap-1 text-xs text-brand-green hover:text-brand-green/80 transition-colors"
             >
               <BookOpen className="h-3 w-3" />
               {t('channel.viewDocs')}

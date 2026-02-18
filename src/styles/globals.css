@@ -4,48 +4,53 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 60 16.7% 97.6%;
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 60 16.7% 97.6%;
+    --secondary: 48 20% 95.1%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 48 20% 95.1%;
+    --muted-foreground: 0 0% 41.6%;
+    --accent: 48 20% 95.1%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --destructive-foreground: 60 16.7% 97.6%;
+    --border: 36 17.9% 89%;
+    --input: 36 17.9% 89%;
+    --ring: 142.5 20.7% 45.5%;
+    --radius: 0.75rem;
+    --brand-green: 142.5 20.7% 45.5%;
+    --brand-green-bg: 132 17.2% 94.3%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 60 2.4% 8%;
+    --foreground: 36 17.9% 89%;
+    --card: 60 1.7% 11.6%;
+    --card-foreground: 36 17.9% 89%;
+    --popover: 60 1.7% 11.6%;
+    --popover-foreground: 36 17.9% 89%;
+    --primary: 60 16.7% 97.6%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 60 1.7% 11.6%;
+    --secondary-foreground: 36 17.9% 89%;
+    --muted: 60 1.2% 16.3%;
+    --muted-foreground: 0 0% 60.4%;
+    --accent: 60 1.2% 16.3%;
+    --accent-foreground: 36 17.9% 89%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive-foreground: 60 16.7% 97.6%;
+    --border: 60 1.2% 16.3%;
+    --input: 60 1.2% 16.3%;
+    --ring: 141.2 20.8% 52%;
+    --radius: 0.75rem;
+    --brand-green: 141.2 20.8% 52%;
+    --brand-green-bg: 141 10% 15%;
   }
 }
 
@@ -55,7 +60,12 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'DM Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
   }
 }
 

@@ -836,9 +836,9 @@ export function Skills() {
                             {skill.isCore ? (
                               <Lock className="h-3 w-3 text-muted-foreground" />
                             ) : skill.isBundled ? (
-                              <Puzzle className="h-3 w-3 text-blue-500/70" />
+                              <Puzzle className="h-3 w-3 text-brand-green/70" />
                             ) : (
-                              <Globe className="h-3 w-3 text-purple-500/70" />
+                              <Globe className="h-3 w-3 text-muted-foreground/70" />
                             )}
                           </CardTitle>
                         </div>
