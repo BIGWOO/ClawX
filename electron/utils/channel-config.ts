@@ -2,7 +2,7 @@
  * Channel Configuration Utilities
  * Manages channel configuration in OpenClaw config files
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, statSync, rmSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { getOpenClawResolvedDir } from './paths';
@@ -12,7 +12,7 @@ const OPENCLAW_DIR = join(homedir(), '.openclaw');
 const CONFIG_FILE = join(OPENCLAW_DIR, 'openclaw.json');
 
 // Channels that are managed as plugins (config goes under plugins.entries, not channels)
-const PLUGIN_CHANNELS = ['whatsapp'];
+const PLUGIN_CHANNELS: string[] = [];
 
 export interface ChannelConfigData {
     enabled?: boolean;
@@ -289,19 +289,6 @@ export function deleteChannelConfig(channelType: string): void {
         }
     }
 
-    // Special handling for WhatsApp credentials
-    if (channelType === 'whatsapp') {
-        try {
-
-            const whatsappDir = join(homedir(), '.openclaw', 'credentials', 'whatsapp');
-            if (existsSync(whatsappDir)) {
-                rmSync(whatsappDir, { recursive: true, force: true });
-                console.log('Deleted WhatsApp credentials directory');
-            }
-        } catch (error) {
-            console.error('Failed to delete WhatsApp credentials:', error);
-        }
-    }
 }
 
 /**
@@ -315,26 +302,6 @@ export function listConfiguredChannels(): string[] {
         channels.push(...Object.keys(config.channels).filter(
             (channelType) => config.channels![channelType]?.enabled !== false
         ));
-    }
-
-    // Check for WhatsApp credentials directory
-    try {
-        const whatsappDir = join(homedir(), '.openclaw', 'credentials', 'whatsapp');
-        if (existsSync(whatsappDir)) {
-            const entries = readdirSync(whatsappDir);
-            // Check if there's at least one directory (session)
-            const hasSession = entries.some((entry: string) => {
-                try {
-                    return statSync(join(whatsappDir, entry)).isDirectory();
-                } catch { return false; }
-            });
-
-            if (hasSession && !channels.includes('whatsapp')) {
-                channels.push('whatsapp');
-            }
-        }
-    } catch {
-        // Ignore errors checking whatsapp dir
     }
 
     return channels;

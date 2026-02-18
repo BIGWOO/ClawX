@@ -220,7 +220,6 @@ export function Dashboard() {
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg">
-                        {channel.type === 'whatsapp' && '📱'}
                         {channel.type === 'telegram' && '✈️'}
                         {channel.type === 'discord' && '🎮'}
                       </span>

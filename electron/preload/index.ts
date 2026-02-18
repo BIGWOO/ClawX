@@ -93,9 +93,6 @@ const electronAPI = {
         'channel:validate',
         'channel:validate',
         'channel:validateCredentials',
-        // WhatsApp
-        'channel:requestWhatsAppQr',
-        'channel:cancelWhatsAppQr',
         // ClawHub
         'clawhub:search',
         'clawhub:install',
@@ -105,9 +102,6 @@ const electronAPI = {
         // Auth / OAuth
         'auth:anthropic-oauth',
         'auth:github-copilot',
-        // UV
-        'uv:check',
-        'uv:install-all',
         // Skill config (direct file access)
         'skill:updateConfig',
         'skill:getConfig',
@@ -149,9 +143,6 @@ const electronAPI = {
         'gateway:notification',
         'gateway:channel-status',
         'gateway:chat-message',
-        'channel:whatsapp-qr',
-        'channel:whatsapp-success',
-        'channel:whatsapp-error',
         'gateway:exit',
         'gateway:error',
         'navigate',

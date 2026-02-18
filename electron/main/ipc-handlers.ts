@@ -42,9 +42,7 @@ import {
   validateChannelConfig,
   validateChannelCredentials,
 } from '../utils/channel-config';
-import { checkUvInstalled, installUv, setupManagedPython } from '../utils/uv-setup';
 import { updateSkillConfig, getSkillConfig, getAllSkillConfigs } from '../utils/skill-config';
-import { whatsAppLoginManager } from '../utils/whatsapp-login';
 import { getProviderConfig } from '../utils/provider-registry';
 import { anthropicOAuthLogin, githubCopilotLogin } from '../utils/oauth-auth';
 
@@ -77,9 +75,6 @@ export function registerIpcHandlers(
   // App handlers
   registerAppHandlers();
 
-  // UV handlers
-  registerUvHandlers();
-
   // Log handlers (for UI to read gateway/app logs)
   registerLogHandlers();
 
@@ -91,9 +86,6 @@ export function registerIpcHandlers(
 
   // Window control handlers (for custom title bar on Windows/Linux)
   registerWindowHandlers(mainWindow);
-
-  // WhatsApp handlers
-  registerWhatsAppHandlers(mainWindow);
 
   // File staging handlers (upload/send separation)
   registerFileHandlers();
@@ -310,32 +302,6 @@ function registerCronHandlers(gatewayManager: GatewayManager): void {
     } catch (error) {
       console.error('Failed to trigger cron job:', error);
       throw error;
-    }
-  });
-}
-
-/**
- * UV-related IPC handlers
- */
-function registerUvHandlers(): void {
-  // Check if uv is installed
-  ipcMain.handle('uv:check', async () => {
-    return await checkUvInstalled();
-  });
-
-  // Install uv and setup managed Python
-  ipcMain.handle('uv:install-all', async () => {
-    try {
-      const isInstalled = await checkUvInstalled();
-      if (!isInstalled) {
-        await installUv();
-      }
-      // Always run python setup to ensure it exists in uv's cache
-      await setupManagedPython();
-      return { success: true };
-    } catch (error) {
-      console.error('Failed to setup uv/python:', error);
-      return { success: false, error: String(error) };
     }
   });
 }
@@ -727,59 +693,6 @@ function registerOpenClawHandlers(): void {
     }
   });
 }
-
-/**
- * WhatsApp Login Handlers
- */
-function registerWhatsAppHandlers(mainWindow: BrowserWindow): void {
-  // Request WhatsApp QR code
-  ipcMain.handle('channel:requestWhatsAppQr', async (_, accountId: string) => {
-    try {
-      logger.info('channel:requestWhatsAppQr', { accountId });
-      await whatsAppLoginManager.start(accountId);
-      return { success: true };
-    } catch (error) {
-      logger.error('channel:requestWhatsAppQr failed', error);
-      return { success: false, error: String(error) };
-    }
-  });
-
-  // Cancel WhatsApp login
-  ipcMain.handle('channel:cancelWhatsAppQr', async () => {
-    try {
-      await whatsAppLoginManager.stop();
-      return { success: true };
-    } catch (error) {
-      logger.error('channel:cancelWhatsAppQr failed', error);
-      return { success: false, error: String(error) };
-    }
-  });
-
-  // Check WhatsApp status (is it active?)
-  // ipcMain.handle('channel:checkWhatsAppStatus', ...)
-
-  // Forward events to renderer
-  whatsAppLoginManager.on('qr', (data) => {
-    if (!mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('channel:whatsapp-qr', data);
-    }
-  });
-
-  whatsAppLoginManager.on('success', (data) => {
-    if (!mainWindow.isDestroyed()) {
-      logger.info('whatsapp:login-success', data);
-      mainWindow.webContents.send('channel:whatsapp-success', data);
-    }
-  });
-
-  whatsAppLoginManager.on('error', (error) => {
-    if (!mainWindow.isDestroyed()) {
-      logger.error('whatsapp:login-error', error);
-      mainWindow.webContents.send('channel:whatsapp-error', error);
-    }
-  });
-}
-
 
 /**
  * Provider-related IPC handlers

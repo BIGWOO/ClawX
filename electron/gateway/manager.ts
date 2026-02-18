@@ -20,8 +20,7 @@ import { getApiKey, getDefaultProvider, getProvider } from '../utils/secure-stor
 import { getProviderEnvVar, getKeyableProviderTypes } from '../utils/provider-registry';
 import { GatewayEventType, JsonRpcNotification, isNotification, isResponse } from './protocol';
 import { logger } from '../utils/logger';
-import { getUvMirrorEnv } from '../utils/uv-env';
-import { isPythonReady, setupManagedPython } from '../utils/uv-setup';
+// uv-env and uv-setup removed
 
 /**
  * Gateway connection status
@@ -201,17 +200,6 @@ export class GatewayManager extends EventEmitter {
     this.setStatus({ state: 'starting', reconnectAttempts: 0 });
     
     try {
-      // Check if Python environment is ready (self-healing)
-      const pythonReady = await isPythonReady();
-      if (!pythonReady) {
-        logger.info('Python environment missing or incomplete, attempting background repair...');
-        // We don't await this to avoid blocking Gateway startup, 
-        // as uv run will handle it if needed, but this pre-warms it.
-        void setupManagedPython().catch(err => {
-          logger.error('Background Python repair failed:', err);
-        });
-      }
-
       // Check if Gateway is already running
       logger.debug('Checking for existing Gateway...');
       const existing = await this.findExistingGateway();
@@ -560,7 +548,6 @@ export class GatewayManager extends EventEmitter {
       }
     }
 
-    const uvEnv = await getUvMirrorEnv();
     logger.info(
       `Starting Gateway process (mode=${mode}, port=${this.status.port}, command="${command}", args="${this.sanitizeSpawnArgs(args).join(' ')}", cwd="${openclawDir}", bundledBin=${binPathExists ? 'yes' : 'no'}, providerKeys=${loadedProviderKeyCount})`
     );
@@ -571,7 +558,6 @@ export class GatewayManager extends EventEmitter {
         ...process.env,
         PATH: finalPath,
         ...providerEnv,
-        ...uvEnv,
         OPENCLAW_GATEWAY_TOKEN: gatewayToken,
         OPENCLAW_SKIP_CHANNELS: '',
         CLAWDBOT_SKIP_CHANNELS: '',

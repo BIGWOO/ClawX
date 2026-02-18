@@ -11,8 +11,6 @@ import { createMenu } from './menu';
 
 import { appUpdater, registerUpdateHandlers } from './updater';
 import { logger } from '../utils/logger';
-import { warmupNetworkOptimization } from '../utils/uv-env';
-
 import { ClawHubService } from '../gateway/clawhub';
 
 // Disable GPU acceleration for better compatibility
@@ -107,9 +105,6 @@ async function initialize(): Promise<void> {
   logger.debug(
     `Runtime: platform=${process.platform}/${process.arch}, electron=${process.versions.electron}, node=${process.versions.node}, packaged=${app.isPackaged}`
   );
-
-  // Warm up network optimization (non-blocking)
-  void warmupNetworkOptimization();
 
   // Set application menu
   createMenu();

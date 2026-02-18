@@ -366,8 +366,6 @@ function AddChannelDialog({ selectedType, onSelectType, onClose, onChannelAdded 
       setIsExistingConfig(false);
       setChannelName('');
       setIsExistingConfig(false);
-      // Ensure we clean up any pending QR session if switching away
-      window.electron.ipcRenderer.invoke('channel:cancelWhatsAppQr').catch(() => { });
       return;
     }
 
@@ -403,64 +401,7 @@ function AddChannelDialog({ selectedType, onSelectType, onClose, onChannelAdded 
     return () => { cancelled = true; };
   }, [selectedType]);
 
-  // Listen for WhatsApp QR events
-  useEffect(() => {
-    if (selectedType !== 'whatsapp') return;
-
-    const onQr = (...args: unknown[]) => {
-      const data = args[0] as { qr: string; raw: string };
-      setQrCode(`data:image/png;base64,${data.qr}`);
-    };
-
-    const onSuccess = async (...args: unknown[]) => {
-      const data = args[0] as { accountId?: string } | undefined;
-      toast.success(t('toast.whatsappConnected'));
-      const accountId = data?.accountId || channelName.trim() || 'default';
-      try {
-        const saveResult = await window.electron.ipcRenderer.invoke(
-          'channel:saveConfig',
-          'whatsapp',
-          { enabled: true }
-        ) as { success?: boolean; error?: string };
-        if (!saveResult?.success) {
-          console.error('Failed to save WhatsApp config:', saveResult?.error);
-        } else {
-          console.info('Saved WhatsApp config for account:', accountId);
-        }
-      } catch (error) {
-        console.error('Failed to save WhatsApp config:', error);
-      }
-      // Register the channel locally so it shows up immediately
-      addChannel({
-        type: 'whatsapp',
-        name: channelName || 'WhatsApp',
-      }).then(() => {
-        // Restart gateway to pick up the new session
-        window.electron.ipcRenderer.invoke('gateway:restart').catch(console.error);
-        onChannelAdded();
-      });
-    };
-
-    const onError = (...args: unknown[]) => {
-      const err = args[0] as string;
-      console.error('WhatsApp Login Error:', err);
-      toast.error(t('toast.whatsappFailed', { error: err }));
-      setQrCode(null);
-      setConnecting(false);
-    };
-
-    const removeQrListener = window.electron.ipcRenderer.on('channel:whatsapp-qr', onQr);
-    const removeSuccessListener = window.electron.ipcRenderer.on('channel:whatsapp-success', onSuccess);
-    const removeErrorListener = window.electron.ipcRenderer.on('channel:whatsapp-error', onError);
-
-    return () => {
-      if (typeof removeQrListener === 'function') removeQrListener();
-      if (typeof removeSuccessListener === 'function') removeSuccessListener();
-      if (typeof removeErrorListener === 'function') removeErrorListener();
-      // Cancel when unmounting or switching types
-      window.electron.ipcRenderer.invoke('channel:cancelWhatsAppQr').catch(() => { });
-    };
-  }, [selectedType, addChannel, channelName, onChannelAdded, t]);
+  // WhatsApp QR login removed
 
   const handleValidate = async () => {
     if (!selectedType) return;
@@ -513,14 +454,6 @@ function AddChannelDialog({ selectedType, onSelectType, onClose, onChannelAdded 
     setValidationResult(null);
 
     try {
-      // For QR-based channels, request QR code
-      if (meta.connectionType === 'qr') {
-        const accountId = channelName.trim() || 'default';
-        await window.electron.ipcRenderer.invoke('channel:requestWhatsAppQr', accountId);
-        // The QR code will be set via event listener
-        return;
-      }
-
       // Step 1: Validate credentials against the actual service API
       if (meta.connectionType === 'token') {
         const validationResponse = await window.electron.ipcRenderer.invoke(
