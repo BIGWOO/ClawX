@@ -102,6 +102,9 @@ const electronAPI = {
         'clawhub:uninstall',
         'clawhub:list',
         'clawhub:openSkillReadme',
+        // Auth / OAuth
+        'auth:anthropic-oauth',
+        'auth:github-copilot',
         // UV
         'uv:check',
         'uv:install-all',
@@ -160,6 +163,8 @@ const electronAPI = {
         'update:downloaded',
         'update:error',
         'cron:updated',
+        'auth:device-code',
+        'auth:login-success',
       ];
 
       if (validChannels.includes(channel)) {
@@ -198,6 +203,8 @@ const electronAPI = {
         'update:progress',
         'update:downloaded',
         'update:error',
+        'auth:device-code',
+        'auth:login-success',
       ];
 
       if (validChannels.includes(channel)) {

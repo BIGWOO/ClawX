@@ -829,10 +829,13 @@ function ProviderContent({
   // Listen for IPC events from OAuth flows
   useEffect(() => {
     const handleDeviceCode = (...args: unknown[]) => {
-      const data = args[1] as { code: string; uri: string } | undefined;
+      const data = args[0] as { code: string; uri: string } | undefined;
       if (data?.code) setDeviceCode(data.code);
     };
-    const handleLoginSuccess = (..._args: unknown[]) => {
+    const handleLoginSuccess = (...args: unknown[]) => {
+      const data = args[0] as { provider?: string } | undefined;
+      // Only handle if the event matches the currently selected provider
+      if (data?.provider && data.provider !== selectedProvider) return;
       setOauthLoading(false);
       setLoginSuccess(true);
       setDeviceCode(null);
@@ -840,13 +843,13 @@ function ProviderContent({
       toast.success(t('provider.loginSuccess'));
       setTimeout(() => setLoginSuccess(false), 3000);
     };
-    window.electron.ipcRenderer.on('auth:device-code', handleDeviceCode);
-    window.electron.ipcRenderer.on('auth:login-success', handleLoginSuccess);
+    const unsubDeviceCode = window.electron.ipcRenderer.on('auth:device-code', handleDeviceCode);
+    const unsubLoginSuccess = window.electron.ipcRenderer.on('auth:login-success', handleLoginSuccess);
     return () => {
-      window.electron.ipcRenderer.off('auth:device-code', handleDeviceCode);
-      window.electron.ipcRenderer.off('auth:login-success', handleLoginSuccess);
+      if (typeof unsubDeviceCode === 'function') unsubDeviceCode();
+      if (typeof unsubLoginSuccess === 'function') unsubLoginSuccess();
     };
-  }, [onConfiguredChange, t]);
+  }, [onConfiguredChange, t, selectedProvider]);
 
   const selectedProviderData = providers.find((p) => p.id === selectedProvider);
   const selectedProviderIconUrl = selectedProviderData
@@ -874,7 +877,7 @@ function ProviderContent({
         setOauthLoading(false);
       }
       // Success is handled by IPC event listener
-    } catch (err) {
+    } catch {
       toast.error(t('provider.loginFailed'));
       setOauthLoading(false);
     }

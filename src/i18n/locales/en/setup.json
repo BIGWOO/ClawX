@@ -72,7 +72,23 @@
         "validateSave": "Validate & Save",
         "valid": "Provider configured successfully",
         "invalid": "Invalid API key",
-        "storedLocally": "Your API key is stored locally on your machine."
+        "storedLocally": "Your API key is stored locally on your machine.",
+        "tabs": {
+            "accountLogin": "Account Login",
+            "apiKey": "API Key"
+        },
+        "accountLogin": {
+            "claude": "Sign in with Claude",
+            "github": "Sign in with GitHub",
+            "claudeDesc": "Use your Claude Pro/Max subscription",
+            "githubDesc": "Use your GitHub Copilot subscription"
+        },
+        "moreProviders": "More options",
+        "noAccount": "Don't have an AI account?",
+        "noAccountDesc": "Sign up for Claude — best for conversation",
+        "loginSuccess": "Login successful! Account linked.",
+        "loginFailed": "Login failed. Please try again.",
+        "deviceCode": "Enter this code in the browser window"
     },
     "channel": {
         "title": "Connect a Messaging Channel",

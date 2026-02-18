@@ -9,7 +9,7 @@ import { saveProviderKeyToOpenClaw } from './openclaw-auth';
 
 // ─── Anthropic OAuth (Webview Login) ───────────────────────────────
 
-export async function anthropicOAuthLogin(): Promise<{ success: boolean; error?: string }> {
+export async function anthropicOAuthLogin(): Promise<{ success: boolean; error?: string; token?: string }> {
   return new Promise((resolve) => {
     const partition = 'persist:anthropic-auth';
     const ses = session.fromPartition(partition);
@@ -27,9 +27,11 @@ export async function anthropicOAuthLogin(): Promise<{ success: boolean; error?:
     });
 
     let resolved = false;
-    const finish = (result: { success: boolean; error?: string }) => {
+    const finish = (result: { success: boolean; error?: string; token?: string }) => {
       if (resolved) return;
       resolved = true;
+      // Clean up cookie listener
+      ses.cookies.removeAllListeners('changed');
       if (!authWindow.isDestroyed()) authWindow.close();
       resolve(result);
     };
@@ -38,7 +40,11 @@ export async function anthropicOAuthLogin(): Promise<{ success: boolean; error?:
     const checkCookies = async () => {
       try {
         const cookies = await ses.cookies.get({ domain: '.claude.ai' });
-        // TODO: Determine the exact cookie/token name Anthropic uses
+        // TODO(oauth): Anthropic does not have a public OAuth API yet.
+        // This is a best-effort heuristic to capture the session token from
+        // Claude's web login flow. The exact cookie name may change.
+        // Once Anthropic releases an official OAuth/OIDC endpoint, replace
+        // this entire cookie-sniffing approach with proper token exchange.
         // Possible candidates: sessionKey, __Secure-next-auth.session-token, clp_*
         const sessionCookie = cookies.find(
           (c) =>
@@ -53,7 +59,7 @@ export async function anthropicOAuthLogin(): Promise<{ success: boolean; error?:
 
           try {
             await saveProviderKeyToOpenClaw('anthropic', token);
-            finish({ success: true });
+            finish({ success: true, token });
           } catch (err) {
             finish({ success: false, error: `Failed to save token: ${err}` });
           }
@@ -108,7 +114,7 @@ interface DeviceFlowCallbacks {
 
 export async function githubCopilotLogin(
   callbacks?: DeviceFlowCallbacks
-): Promise<{ success: boolean; error?: string; userCode?: string; verificationUri?: string }> {
+): Promise<{ success: boolean; error?: string; token?: string; userCode?: string; verificationUri?: string }> {
   try {
     // Step 1: Request device code
     const codeRes = await fetch('https://github.com/login/device/code', {
@@ -127,7 +133,7 @@ export async function githubCopilotLogin(
       return { success: false, error: `Device code request failed: ${codeRes.status}` };
     }
 
-    const deviceData: DeviceCodeResponse = await codeRes.json();
+    const deviceData = (await codeRes.json()) as DeviceCodeResponse;
     const { device_code, user_code, verification_uri, expires_in, interval } = deviceData;
 
     logger.info('[oauth] GitHub device code obtained, user_code:', user_code);
@@ -162,12 +168,16 @@ export async function githubCopilotLogin(
 
       if (!tokenRes.ok) continue;
 
-      const tokenData = await tokenRes.json();
+      const tokenData = (await tokenRes.json()) as {
+        access_token?: string;
+        error?: string;
+        error_description?: string;
+      };
 
       if (tokenData.access_token) {
         logger.info('[oauth] GitHub access token obtained');
         await saveProviderKeyToOpenClaw('copilot', tokenData.access_token);
-        return { success: true };
+        return { success: true, token: tokenData.access_token };
       }
 
       if (tokenData.error === 'authorization_pending') {

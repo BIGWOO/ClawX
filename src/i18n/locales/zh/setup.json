@@ -72,7 +72,23 @@
         "validateSave": "验证并保存",
         "valid": "提供商配置成功",
         "invalid": "无效的 API 密钥",
-        "storedLocally": "您的 API 密钥存储在本地机器上。"
+        "storedLocally": "您的 API 密钥存储在本地机器上。",
+        "tabs": {
+            "accountLogin": "账号登录",
+            "apiKey": "API 密钥"
+        },
+        "accountLogin": {
+            "claude": "使用 Claude 账号登录",
+            "github": "使用 GitHub 账号登录",
+            "claudeDesc": "直接使用 Claude Pro/Max 订阅额度",
+            "githubDesc": "使用 GitHub Copilot 订阅"
+        },
+        "moreProviders": "更多选择",
+        "noAccount": "还没有 AI 账号？",
+        "noAccountDesc": "推荐注册 Claude，最适合中文对话",
+        "loginSuccess": "登录成功！已连接您的账号",
+        "loginFailed": "登录失败，请重试",
+        "deviceCode": "请在弹出的网页中输入验证码"
     },
     "channel": {
         "title": "连接消息渠道",

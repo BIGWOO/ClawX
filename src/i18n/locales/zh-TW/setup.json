@@ -72,7 +72,23 @@
         "validateSave": "驗證並儲存",
         "valid": "供應商設定成功",
         "invalid": "無效的 API 金鑰",
-        "storedLocally": "您的 API 金鑰儲存在本機上。"
+        "storedLocally": "您的 API 金鑰儲存在本機上。",
+        "tabs": {
+            "accountLogin": "帳號登入",
+            "apiKey": "API 金鑰"
+        },
+        "accountLogin": {
+            "claude": "使用 Claude 帳號登入",
+            "github": "使用 GitHub 帳號登入",
+            "claudeDesc": "直接使用 Claude Pro/Max 訂閱額度",
+            "githubDesc": "使用 GitHub Copilot 訂閱"
+        },
+        "moreProviders": "更多選擇",
+        "noAccount": "還沒有 AI 帳號？",
+        "noAccountDesc": "推薦註冊 Claude，最適合中文對話",
+        "loginSuccess": "登入成功！已連結您的帳號",
+        "loginFailed": "登入失敗，請重試",
+        "deviceCode": "請在彈出的網頁中輸入驗證碼"
     },
     "channel": {
         "title": "連接訊息頻道",

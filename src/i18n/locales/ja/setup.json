@@ -72,7 +72,23 @@
         "validateSave": "検証して保存",
         "valid": "プロバイダーが正常に構成されました",
         "invalid": "無効な API キー",
-        "storedLocally": "API キーはローカルマシンに保存されます。"
+        "storedLocally": "API キーはローカルマシンに保存されます。",
+        "tabs": {
+            "accountLogin": "アカウントログイン",
+            "apiKey": "APIキー"
+        },
+        "accountLogin": {
+            "claude": "Claudeアカウントでログイン",
+            "github": "GitHubアカウントでログイン",
+            "claudeDesc": "Claude Pro/Maxサブスクリプションを使用",
+            "githubDesc": "GitHub Copilotサブスクリプションを使用"
+        },
+        "moreProviders": "その他の選択肢",
+        "noAccount": "AIアカウントをお持ちでない方",
+        "noAccountDesc": "Claudeの登録がおすすめです",
+        "loginSuccess": "ログイン成功！アカウントが連携されました",
+        "loginFailed": "ログインに失敗しました。再試行してください",
+        "deviceCode": "ブラウザで以下のコードを入力してください"
     },
     "channel": {
         "title": "メッセージングチャンネルを接続",

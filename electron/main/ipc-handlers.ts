@@ -46,6 +46,7 @@ import { checkUvInstalled, installUv, setupManagedPython } from '../utils/uv-set
 import { updateSkillConfig, getSkillConfig, getAllSkillConfigs } from '../utils/skill-config';
 import { whatsAppLoginManager } from '../utils/whatsapp-login';
 import { getProviderConfig } from '../utils/provider-registry';
+import { anthropicOAuthLogin, githubCopilotLogin } from '../utils/oauth-auth';
 
 /**
  * Register all IPC handlers
@@ -96,6 +97,9 @@ export function registerIpcHandlers(
 
   // File staging handlers (upload/send separation)
   registerFileHandlers();
+
+  // OAuth authentication handlers
+  registerOAuthHandlers(mainWindow);
 }
 
 /**
@@ -1608,5 +1612,61 @@ function registerFileHandlers(): void {
       }
     }
     return results;
+  });
+}
+
+// ─── OAuth Authentication Handlers ─────────────────────────────────
+
+function registerOAuthHandlers(mainWindow: BrowserWindow): void {
+  // Helper: persist provider config + set as default after OAuth success
+  const persistOAuthProvider = async (providerType: string, providerName: string, token?: string) => {
+    await saveProvider({
+      id: providerType,
+      name: providerName,
+      type: providerType as ProviderConfig['type'],
+      enabled: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    // Also store the token in secure-storage so provider:list reports hasKey=true
+    if (token) {
+      await storeApiKey(providerType, token);
+    }
+    await setDefaultProvider(providerType);
+    logger.info(`[oauth] Persisted provider config and default: ${providerType}`);
+  };
+
+  ipcMain.handle('auth:anthropic-oauth', async () => {
+    logger.info('[ipc] auth:anthropic-oauth invoked');
+    try {
+      const result = await anthropicOAuthLogin();
+      if (result.success) {
+        await persistOAuthProvider('anthropic', 'Anthropic', result.token);
+        mainWindow.webContents.send('auth:login-success', { provider: 'anthropic' });
+      }
+      return { success: result.success, error: result.error };
+    } catch (err) {
+      logger.error('[ipc] Anthropic OAuth error:', err);
+      return { success: false, error: String(err) };
+    }
+  });
+
+  ipcMain.handle('auth:github-copilot', async () => {
+    logger.info('[ipc] auth:github-copilot invoked');
+    try {
+      const result = await githubCopilotLogin({
+        onUserCode: (code, uri) => {
+          mainWindow.webContents.send('auth:device-code', { code, uri, provider: 'copilot' });
+        },
+      });
+      if (result.success) {
+        await persistOAuthProvider('copilot', 'GitHub Copilot', result.token);
+        mainWindow.webContents.send('auth:login-success', { provider: 'copilot' });
+      }
+      return { success: result.success, error: result.error };
+    } catch (err) {
+      logger.error('[ipc] GitHub Copilot OAuth error:', err);
+      return { success: false, error: String(err) };
+    }
   });
 }
