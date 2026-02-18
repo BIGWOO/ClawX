@@ -13,6 +13,7 @@ export const BUILTIN_PROVIDER_TYPES = [
   'moonshot',
   'siliconflow',
   'ollama',
+  'copilot',
 ] as const;
 export type BuiltinProviderType = (typeof BUILTIN_PROVIDER_TYPES)[number];
 export type ProviderType = BuiltinProviderType | 'custom';
@@ -95,6 +96,15 @@ const REGISTRY: Record<string, ProviderBackendMeta> = {
       baseUrl: 'https://api.siliconflow.cn/v1',
       api: 'openai-completions',
       apiKeyEnv: 'SILICONFLOW_API_KEY',
+    },
+  },
+  copilot: {
+    envVar: 'GITHUB_COPILOT_TOKEN',
+    defaultModel: 'copilot/gpt-4o',
+    providerConfig: {
+      baseUrl: 'https://api.githubcopilot.com',
+      api: 'openai-completions',
+      apiKeyEnv: 'GITHUB_COPILOT_TOKEN',
     },
   },
   // Additional providers with env var mappings but no default model
