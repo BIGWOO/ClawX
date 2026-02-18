@@ -103,7 +103,40 @@
         "validationError": "驗證失敗",
         "connected": "{{name}} 已連線",
         "connectedDesc": "您的頻道已設定。將在閘道啟動時連線。",
-        "configureAnother": "設定另一個頻道"
+        "configureAnother": "設定另一個頻道",
+        "guide": {
+            "toggle": "不知道怎麼取得 Bot 連線密碼？",
+            "tokenValid": "格式正確",
+            "tokenInvalid": "格式不對，請確認是否完整複製",
+            "steps": {
+                "1": {
+                    "text": "在手機或電腦上打開 Telegram",
+                    "hint": "可以用手機 App 或桌面版",
+                    "button": "打開 Telegram"
+                },
+                "2": {
+                    "text": "在搜尋欄輸入 @BotFather，點擊有藍色勾勾 ✓ 的官方帳號",
+                    "hint": "BotFather 是 Telegram 的官方機器人管理員，不是第三方服務"
+                },
+                "3": {
+                    "text": "點擊 Start，然後發送 /newbot",
+                    "hint": "BotFather 會問你幾個問題"
+                },
+                "4": {
+                    "text": "輸入你的 AI 助理名稱（例如：我的小幫手）",
+                    "text2": "再輸入 username（必須以 bot 結尾，例如：my_helper_bot）",
+                    "hint": "名稱之後可以改，username 不能改"
+                },
+                "5": {
+                    "text": "BotFather 會給你一串像這樣的文字：",
+                    "hint": "這就是你的 Bot 連線密碼，複製後貼到上面的輸入框"
+                }
+            },
+            "paidService": {
+                "text": "還是搞不定？我們可以幫你",
+                "button": "NT$300 代辦申請"
+            }
+        }
     },
     "installing": {
         "title": "安裝必要元件",

@@ -103,7 +103,40 @@
         "validationError": "検証に失敗しました",
         "connected": "{{name}} 接続済み",
         "connectedDesc": "チャンネルが構成されました。ゲートウェイ起動時に接続されます。",
-        "configureAnother": "別のチャンネルを構成"
+        "configureAnother": "別のチャンネルを構成",
+        "guide": {
+            "toggle": "Bot トークンの取得方法がわからない？",
+            "tokenValid": "フォーマット正しい",
+            "tokenInvalid": "フォーマットが正しくありません。完全にコピーされたか確認してください",
+            "steps": {
+                "1": {
+                    "text": "スマホまたはパソコンで Telegram を開きます",
+                    "hint": "モバイルアプリまたはデスクトップ版が使えます",
+                    "button": "Telegram を開く"
+                },
+                "2": {
+                    "text": "検索バーで @BotFather を検索し、青いチェックマーク ✓ のある公式アカウントをタップ",
+                    "hint": "BotFather は Telegram の公式ボット管理者で、サードパーティではありません"
+                },
+                "3": {
+                    "text": "Start をタップし、/newbot を送信",
+                    "hint": "BotFather がいくつか質問します"
+                },
+                "4": {
+                    "text": "AI アシスタントの名前を入力（例：マイヘルパー）",
+                    "text2": "次にユーザー名を入力（bot で終わる必要があります。例：my_helper_bot）",
+                    "hint": "名前は後で変更可能、ユーザー名は変更不可"
+                },
+                "5": {
+                    "text": "BotFather がこのような文字列を返します：",
+                    "hint": "これがあなたの Bot トークンです。コピーして上の入力欄に貼り付けてください"
+                }
+            },
+            "paidService": {
+                "text": "まだ困っていますか？お手伝いします",
+                "button": "¥3,000 代行サービス"
+            }
+        }
     },
     "installing": {
         "title": "必須コンポーネントをインストール中",

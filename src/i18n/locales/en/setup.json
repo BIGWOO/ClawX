@@ -103,7 +103,40 @@
         "validationError": "Validation failed",
         "connected": "{{name}} Connected",
         "connectedDesc": "Your channel has been configured. It will connect when the Gateway starts.",
-        "configureAnother": "Configure another channel"
+        "configureAnother": "Configure another channel",
+        "guide": {
+            "toggle": "Don't know how to get a Bot Token?",
+            "tokenValid": "Format correct",
+            "tokenInvalid": "Format incorrect — make sure you copied the full token",
+            "steps": {
+                "1": {
+                    "text": "Open Telegram on your phone or computer",
+                    "hint": "You can use the mobile app or the desktop version",
+                    "button": "Open Telegram"
+                },
+                "2": {
+                    "text": "Search for @BotFather and tap the official account with the blue checkmark ✓",
+                    "hint": "BotFather is Telegram's official bot manager, not a third-party service"
+                },
+                "3": {
+                    "text": "Tap Start, then send /newbot",
+                    "hint": "BotFather will ask you a few questions"
+                },
+                "4": {
+                    "text": "Enter a name for your AI assistant (e.g. My Helper)",
+                    "text2": "Then enter a username (must end with bot, e.g. my_helper_bot)",
+                    "hint": "The name can be changed later; the username cannot"
+                },
+                "5": {
+                    "text": "BotFather will give you a string like this:",
+                    "hint": "This is your Bot Token — copy it and paste it in the field above"
+                }
+            },
+            "paidService": {
+                "text": "Still stuck? We can help",
+                "button": "NT$300 Setup Service"
+            }
+        }
     },
     "installing": {
         "title": "Installing Essential Components",

@@ -103,7 +103,40 @@
         "validationError": "验证失败",
         "connected": "{{name}} 已连接",
         "connectedDesc": "您的渠道已配置。将在网关启动时连接。",
-        "configureAnother": "配置另一个渠道"
+        "configureAnother": "配置另一个渠道",
+        "guide": {
+            "toggle": "不知道怎么获取 Bot 连接密码？",
+            "tokenValid": "格式正确",
+            "tokenInvalid": "格式不对，请确认是否完整复制",
+            "steps": {
+                "1": {
+                    "text": "在手机或电脑上打开 Telegram",
+                    "hint": "可以用手机 App 或桌面版",
+                    "button": "打开 Telegram"
+                },
+                "2": {
+                    "text": "在搜索栏输入 @BotFather，点击有蓝色勾勾 ✓ 的官方账号",
+                    "hint": "BotFather 是 Telegram 的官方机器人管理员，不是第三方服务"
+                },
+                "3": {
+                    "text": "点击 Start，然后发送 /newbot",
+                    "hint": "BotFather 会问你几个问题"
+                },
+                "4": {
+                    "text": "输入你的 AI 助理名称（例如：我的小帮手）",
+                    "text2": "再输入 username（必须以 bot 结尾，例如：my_helper_bot）",
+                    "hint": "名称之后可以改，username 不能改"
+                },
+                "5": {
+                    "text": "BotFather 会给你一串像这样的文字：",
+                    "hint": "这就是你的 Bot 连接密码，复制后贴到上面的输入框"
+                }
+            },
+            "paidService": {
+                "text": "还是搞不定？我们可以帮你",
+                "button": "¥60 代办申请"
+            }
+        }
     },
     "installing": {
         "title": "安装必要组件",

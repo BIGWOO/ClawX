@@ -70,3 +70,11 @@ export function truncate(text: string, maxLength: number): string {
   }
   return text.slice(0, maxLength - 3) + '...';
 }
+
+/**
+ * Validate Telegram Bot Token format
+ * Expected format: `<bot_id>:<token_string>` e.g. `110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw`
+ */
+export function validateTelegramToken(token: string): boolean {
+  return /^\d+:[A-Za-z0-9_-]{35}$/.test(token.trim());
+}

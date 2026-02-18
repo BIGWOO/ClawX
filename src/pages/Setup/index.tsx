@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
+import { cn, validateTelegramToken } from '@/lib/utils';
 import { useGatewayStore } from '@/stores/gateway';
 import { useSettingsStore } from '@/stores/settings';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +38,7 @@ import {
   type ChannelMeta,
   type ChannelConfigField,
 } from '@/types/channel';
+import { TelegramGuide } from '@/components/setup/TelegramGuide';
 
 interface SetupStep {
   id: string;
@@ -1488,6 +1489,7 @@ function SetupChannelContent() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [tokenFormatStatus, setTokenFormatStatus] = useState<'idle' | 'valid' | 'invalid'>('idle');
 
   const meta: ChannelMeta | null = selectedChannel ? CHANNEL_META[selectedChannel] : null;
   const primaryChannels = getPrimaryChannels();
@@ -1670,6 +1672,7 @@ function SetupChannelContent() {
       {/* Config fields */}
       {meta?.configFields.map((field: ChannelConfigField) => {
         const isPassword = field.type === 'password';
+        const isTelegramToken = selectedChannel === 'telegram' && field.key === 'token';
         return (
           <div key={field.key} className="space-y-1.5">
             <Label htmlFor={`setup-${field.key}`} className="text-foreground">
@@ -1682,9 +1685,23 @@ function SetupChannelContent() {
                 type={isPassword && !showSecrets[field.key] ? 'password' : 'text'}
                 placeholder={field.placeholder ? t(field.placeholder) : undefined}
                 value={configValues[field.key] || ''}
-                onChange={(e) => setConfigValues((prev) => ({ ...prev, [field.key]: e.target.value }))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setConfigValues((prev) => ({ ...prev, [field.key]: val }));
+                  if (isTelegramToken) {
+                    if (!val.trim()) {
+                      setTokenFormatStatus('idle');
+                    } else {
+                      setTokenFormatStatus(validateTelegramToken(val) ? 'valid' : 'invalid');
+                    }
+                  }
+                }}
                 autoComplete="off"
-                className="font-mono text-sm bg-background border-input"
+                className={cn(
+                  'font-mono text-sm bg-background border-input',
+                  isTelegramToken && tokenFormatStatus === 'valid' && 'border-[#5C8C6E] focus-visible:ring-[#5C8C6E]',
+                  isTelegramToken && tokenFormatStatus === 'invalid' && 'border-red-400 focus-visible:ring-red-400',
+                )}
               />
               {isPassword && (
                 <Button
@@ -1698,9 +1715,22 @@ function SetupChannelContent() {
                 </Button>
               )}
             </div>
+            {/* Token format validation feedback */}
+            {isTelegramToken && tokenFormatStatus === 'valid' && (
+              <p className="text-xs text-[#5C8C6E] flex items-center gap-1">
+                ✅ {t('channel.guide.tokenValid')}
+              </p>
+            )}
+            {isTelegramToken && tokenFormatStatus === 'invalid' && (
+              <p className="text-xs text-red-400 flex items-center gap-1">
+                ❌ {t('channel.guide.tokenInvalid')}
+              </p>
+            )}
             {field.description && (
               <p className="text-xs text-slate-500 mt-1">{t(field.description)}</p>
             )}
+            {/* Telegram guide panel */}
+            {isTelegramToken && <TelegramGuide />}
           </div>
         );
       })}
