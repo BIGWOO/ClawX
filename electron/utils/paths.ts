@@ -33,21 +33,21 @@ export function getOpenClawSkillsDir(): string {
 }
 
 /**
- * Get ClawX config directory
+ * Get Agent-i config directory
  */
-export function getClawXConfigDir(): string {
-  return join(homedir(), '.clawx');
+export function getAgentIConfigDir(): string {
+  return join(homedir(), '.agent-i');
 }
 
 /**
- * Get ClawX logs directory
+ * Get Agent-i logs directory
  */
 export function getLogsDir(): string {
   return join(app.getPath('userData'), 'logs');
 }
 
 /**
- * Get ClawX data directory
+ * Get Agent-i data directory
  */
 export function getDataDir(): string {
   return app.getPath('userData');

@@ -1014,7 +1014,7 @@ function registerProviderHandlers(): void {
         // This ensures Setup/Settings validation reflects unsaved edits immediately.
         const resolvedBaseUrl = options?.baseUrl || provider?.baseUrl || registryBaseUrl;
 
-        console.log(`[clawx-validate] validating provider type: ${providerType}`);
+        console.log(`[agent-i-validate] validating provider type: ${providerType}`);
         return await validateApiKeyWithProvider(providerType, apiKey, { baseUrl: resolvedBaseUrl });
       } catch (error) {
         console.error('Validation error:', error);
@@ -1068,7 +1068,7 @@ async function validateApiKeyWithProvider(
 }
 
 function logValidationStatus(provider: string, status: number): void {
-  console.log(`[clawx-validate] ${provider} HTTP ${status}`);
+  console.log(`[agent-i-validate] ${provider} HTTP ${status}`);
 }
 
 function maskSecret(secret: string): string {
@@ -1115,7 +1115,7 @@ function logValidationRequest(
   headers: Record<string, string>
 ): void {
   console.log(
-    `[clawx-validate] ${provider} request ${method} ${sanitizeValidationUrl(url)} headers=${JSON.stringify(sanitizeHeaders(headers))}`
+    `[agent-i-validate] ${provider} request ${method} ${sanitizeValidationUrl(url)} headers=${JSON.stringify(sanitizeHeaders(headers))}`
   );
 }
 
@@ -1193,7 +1193,7 @@ async function validateOpenAiCompatibleKey(
   // Fall back to a minimal /chat/completions POST which almost all providers support.
   if (modelsResult.error?.includes('API error: 404')) {
     console.log(
-      `[clawx-validate] ${providerType} /models returned 404, falling back to /chat/completions probe`
+      `[agent-i-validate] ${providerType} /models returned 404, falling back to /chat/completions probe`
     );
     const base = normalizeBaseUrl(trimmedBaseUrl);
     const chatUrl = `${base}/chat/completions`;

@@ -67,12 +67,12 @@
         "baseUrl": "基礎 URL",
         "modelId": "模型 ID",
         "modelIdDesc": "供應商的模型識別碼（例如 deepseek-ai/DeepSeek-V3）",
-        "apiKey": "API 密鑰",
+        "apiKey": "API 金鑰",
         "save": "儲存",
         "validateSave": "驗證並儲存",
         "valid": "供應商設定成功",
-        "invalid": "無效的 API 密鑰",
-        "storedLocally": "您的 API 密鑰儲存在本機上。"
+        "invalid": "無效的 API 金鑰",
+        "storedLocally": "您的 API 金鑰儲存在本機上。"
     },
     "channel": {
         "title": "連接訊息頻道",

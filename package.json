@@ -1,5 +1,5 @@
 {
-    "name": "clawx",
+    "name": "agent-i",
     "version": "0.1.13",
     "pnpm": {
         "onlyBuiltDependencies": [
@@ -11,9 +11,9 @@
             "sharp"
         ]
     },
-    "description": "ClawX - Graphical AI Assistant based on OpenClaw",
+    "description": "Agent-i - Graphical AI Assistant based on OpenClaw",
     "main": "dist-electron/main/index.js",
-    "author": "ClawX Team",
+    "author": "Agent-i Team",
     "license": "MIT",
     "private": true,
     "scripts": {

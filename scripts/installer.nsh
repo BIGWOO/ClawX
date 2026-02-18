@@ -1,4 +1,4 @@
-; ClawX Custom NSIS Uninstaller Script
+; Agent-i Custom NSIS Uninstaller Script
 ; Provides a "Complete Removal" option during uninstallation
 ; to delete .openclaw config and AppData resources.
 ; Handles both per-user and per-machine (all users) installations.
@@ -6,14 +6,14 @@
 !macro customUnInstall
   ; Ask user if they want to completely remove all user data
   MessageBox MB_YESNO|MB_ICONQUESTION \
-    "Do you want to completely remove all ClawX user data?$\r$\n$\r$\nThis will delete:$\r$\n  • .openclaw folder (configuration & skills)$\r$\n  • AppData\Local\clawx (local app data)$\r$\n  • AppData\Roaming\clawx (roaming app data)$\r$\n$\r$\nSelect 'No' to keep your data for future reinstallation." \
+    "Do you want to completely remove all Agent-i user data?$\r$\n$\r$\nThis will delete:$\r$\n  • .openclaw folder (configuration & skills)$\r$\n  • AppData\Local\agent-i (local app data)$\r$\n  • AppData\Roaming\agent-i (roaming app data)$\r$\n$\r$\nSelect 'No' to keep your data for future reinstallation." \
     /SD IDNO IDYES _cu_removeData IDNO _cu_skipRemove
 
   _cu_removeData:
     ; --- Always remove current user's data first ---
     RMDir /r "$PROFILE\.openclaw"
-    RMDir /r "$LOCALAPPDATA\clawx"
-    RMDir /r "$APPDATA\clawx"
+    RMDir /r "$LOCALAPPDATA\agent-i"
+    RMDir /r "$APPDATA\agent-i"
 
     ; --- For per-machine (all users) installs, enumerate all user profiles ---
     ; Registry key HKLM\...\ProfileList contains a subkey for each user SID.
@@ -43,8 +43,8 @@
 
     ; Remove .openclaw and AppData for this user profile
     RMDir /r "$R2\.openclaw"
-    RMDir /r "$R2\AppData\Local\clawx"
-    RMDir /r "$R2\AppData\Roaming\clawx"
+    RMDir /r "$R2\AppData\Local\agent-i"
+    RMDir /r "$R2\AppData\Roaming\agent-i"
 
   _cu_enumNext:
     IntOp $R0 $R0 + 1

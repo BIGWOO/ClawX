@@ -7,11 +7,11 @@
  * Port configuration
  */
 export const PORTS = {
-  /** ClawX GUI development server port */
-  CLAWX_DEV: 5173,
+  /** Agent-i GUI development server port */
+  AGENT_I_DEV: 5173,
   
-  /** ClawX GUI production port (for reference) */
-  CLAWX_GUI: 23333,
+  /** Agent-i GUI production port (for reference) */
+  AGENT_I_GUI: 23333,
   
   /** OpenClaw Gateway port */
   OPENCLAW_GATEWAY: 18789,
@@ -21,7 +21,7 @@ export const PORTS = {
  * Get port from environment or default
  */
 export function getPort(key: keyof typeof PORTS): number {
-  const envKey = `CLAWX_PORT_${key}`;
+  const envKey = `AGENT_I_PORT_${key}`;
   const envValue = process.env[envKey];
   return envValue ? parseInt(envValue, 10) : PORTS[key];
 }
@@ -33,11 +33,11 @@ export const APP_PATHS = {
   /** OpenClaw configuration directory */
   OPENCLAW_CONFIG: '~/.openclaw',
   
-  /** ClawX configuration directory */
-  CLAWX_CONFIG: '~/.clawx',
+  /** Agent-i configuration directory */
+  AGENT_I_CONFIG: '~/.agent-i',
   
   /** Log files directory */
-  LOGS: '~/.clawx/logs',
+  LOGS: '~/.agent-i/logs',
 } as const;
 
 /**

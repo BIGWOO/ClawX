@@ -12,7 +12,7 @@
     },
     "aiProviders": {
         "title": "AI 模型供應商",
-        "description": "設定 AI 模型供應商和 API 密鑰",
+        "description": "設定 AI 模型供應商和 API 金鑰",
         "add": "新增供應商",
         "custom": "自訂",
         "notRequired": "非必填",
@@ -25,8 +25,8 @@
             "title": "新增 AI 供應商",
             "desc": "設定新的 AI 模型供應商",
             "displayName": "顯示名稱",
-            "apiKey": "API 密鑰",
-            "apiKeyStored": "您的 API 密鑰儲存在本機上。",
+            "apiKey": "API 金鑰",
+            "apiKeyStored": "您的 API 金鑰儲存在本機上。",
             "baseUrl": "基礎 URL",
             "modelId": "模型 ID",
             "cancel": "取消",
@@ -38,9 +38,9 @@
         "card": {
             "default": "預設",
             "configured": "已設定",
-            "noKey": "未設定 API 密鑰",
+            "noKey": "未設定 API 金鑰",
             "setDefault": "設為預設",
-            "editKey": "編輯 API 密鑰",
+            "editKey": "編輯 API 金鑰",
             "delete": "刪除供應商"
         },
         "toast": {
@@ -52,7 +52,7 @@
             "failedDefault": "設定預設失敗",
             "updated": "供應商已更新",
             "failedUpdate": "更新供應商失敗",
-            "invalidKey": "無效的 API 密鑰",
+            "invalidKey": "無效的 API 金鑰",
             "modelRequired": "需要模型 ID"
         }
     },

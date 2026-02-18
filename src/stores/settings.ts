@@ -52,6 +52,7 @@ const defaultSettings = {
   theme: 'system' as Theme,
   language: (() => {
     const lang = navigator.language.toLowerCase();
+    if (lang.startsWith('zh-tw') || lang.startsWith('zh-hk') || lang.startsWith('zh-mo')) return 'zh-TW';
     if (lang.startsWith('zh')) return 'zh';
     if (lang.startsWith('ja')) return 'ja';
     return 'en';
@@ -88,7 +89,7 @@ export const useSettingsStore = create<SettingsState>()(
       resetSettings: () => set(defaultSettings),
     }),
     {
-      name: 'clawx-settings',
+      name: 'agent-i-settings',
     }
   )
 );

@@ -30,7 +30,7 @@
         "qrCode": "QR Code",
         "token": "權杖",
         "scanQR": "使用 {{name}} 掃描此 QR Code",
-        "refreshCode": "重新整理代碼",
+        "refreshCode": "重新整理驗證碼",
         "loadingConfig": "正在載入設定...",
         "existingHint": "您已設定過此頻道",
         "howToConnect": "如何連接",
@@ -53,7 +53,7 @@
     "meta": {
         "telegram": {
             "description": "使用 @BotFather 提供的機器人權杖連接 Telegram",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/telegram",
+            "docsUrl": "https://docs.openclaw.ai/channels/telegram",
             "fields": {
                 "botToken": {
                     "label": "機器人權杖",
@@ -75,7 +75,7 @@
         },
         "discord": {
             "description": "使用開發者入口提供的機器人權杖連接 Discord",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/discord#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E4%BD%A0%E7%9A%84%E6%9C%BA%E5%99%A8%E4%BA%BA",
+            "docsUrl": "https://docs.openclaw.ai/channels/discord#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E4%BD%A0%E7%9A%84%E6%9C%BA%E5%99%A8%E4%BA%BA",
             "fields": {
                 "token": {
                     "label": "機器人權杖",
@@ -103,7 +103,7 @@
         },
         "whatsapp": {
             "description": "透過掃描 QR Code 連接 WhatsApp（無需手機號碼）",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/whatsapp",
+            "docsUrl": "https://docs.openclaw.ai/channels/whatsapp",
             "instructions": [
                 "在手機上開啟 WhatsApp",
                 "前往設定 > 已連結裝置 > 連結裝置",
@@ -113,7 +113,7 @@
         },
         "signal": {
             "description": "使用 signal-cli 連接 Signal",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/signal",
+            "docsUrl": "https://docs.openclaw.ai/channels/signal",
             "fields": {
                 "phoneNumber": {
                     "label": "手機號碼",
@@ -128,15 +128,15 @@
         },
         "feishu": {
             "description": "透過 WebSocket 連接飛書/Lark 機器人",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/feishu#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%88%9B%E5%BB%BA%E9%A3%9E%E4%B9%A6%E5%BA%94%E7%94%A8",
+            "docsUrl": "https://docs.openclaw.ai/channels/feishu#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%88%9B%E5%BB%BA%E9%A3%9E%E4%B9%A6%E5%BA%94%E7%94%A8",
             "fields": {
                 "appId": {
                     "label": "應用程式 ID (App ID)",
                     "placeholder": "cli_xxxxxx"
                 },
                 "appSecret": {
-                    "label": "應用程式密鑰 (App Secret)",
-                    "placeholder": "您的應用程式密鑰"
+                    "label": "應用程式金鑰 (App Secret)",
+                    "placeholder": "您的應用程式金鑰"
                 }
             },
             "instructions": [
@@ -149,7 +149,7 @@
         },
         "imessage": {
             "description": "透過 BlueBubbles (macOS) 連接 iMessage",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/bluebubbles",
+            "docsUrl": "https://docs.openclaw.ai/channels/bluebubbles",
             "fields": {
                 "serverUrl": {
                     "label": "BlueBubbles 伺服器位址",
@@ -168,7 +168,7 @@
         },
         "matrix": {
             "description": "連接到 Matrix 協定",
-            "docsUrl": "https://docs.openclaw.ai/zh-CN/channels/matrix",
+            "docsUrl": "https://docs.openclaw.ai/channels/matrix",
             "fields": {
                 "homeserver": {
                     "label": "Homeserver 位址",
@@ -194,14 +194,14 @@
                     "placeholder": "您的 LINE 頻道存取權杖"
                 },
                 "channelSecret": {
-                    "label": "頻道密鑰",
-                    "placeholder": "您的 LINE 頻道密鑰"
+                    "label": "頻道金鑰",
+                    "placeholder": "您的 LINE 頻道金鑰"
                 }
             },
             "instructions": [
                 "前往 LINE 開發者主控台",
                 "建立一個 Messaging API 頻道",
-                "取得頻道存取權杖和密鑰"
+                "取得頻道存取權杖和金鑰"
             ]
         },
         "msteams": {
@@ -237,7 +237,7 @@
                 "建立 Google Cloud 專案",
                 "啟用 Google Chat API",
                 "建立服務帳號",
-                "下載 JSON 密鑰檔案"
+                "下載 JSON 金鑰檔案"
             ]
         },
         "mattermost": {

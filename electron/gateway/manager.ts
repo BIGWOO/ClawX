@@ -767,7 +767,7 @@ export class GatewayManager extends EventEmitter {
             maxProtocol: 3,
             client: {
               id: 'gateway-client',
-              displayName: 'ClawX',
+              displayName: 'Agent-i',
               version: '0.1.0',
               platform: process.platform,
               mode: 'ui',

@@ -12,7 +12,7 @@ async function getProviderStore() {
   if (!providerStore) {
     const Store = (await import('electron-store')).default;
     providerStore = new Store({
-      name: 'clawx-providers',
+      name: 'agent-i-providers',
       defaults: {
         providers: {} as Record<string, ProviderConfig>,
         apiKeys: {} as Record<string, string>,
