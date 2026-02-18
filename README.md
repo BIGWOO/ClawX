@@ -1,352 +1,157 @@
+<div align="center">
 
-<p align="center">
-  <img src="src/assets/logo.svg" width="128" height="128" alt="Agent-i Logo" />
-</p>
+# 🤖 Agent-i Desktop
 
-<h1 align="center">Agent-i</h1>
+### 我的 AI，我做主 — My AI, My Way
 
-<p align="center">
-  <strong>The Desktop Interface for OpenClaw AI Agents</strong>
-</p>
+**AI 助理桌面安裝程式 · 讓任何人都能部署 AI 助理**
 
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#why-agent-i">Why Agent-i</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#development">Development</a> •
-  <a href="#contributing">Contributing</a>
-</p>
+[![Electron](https://img.shields.io/badge/Electron-40-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/platform-MacOS%20%7C%20Windows%20%7C%20Linux-blue" alt="Platform" />
-  <img src="https://img.shields.io/badge/electron-40+-47848F?logo=electron" alt="Electron" />
-  <img src="https://img.shields.io/badge/react-19-61DAFB?logo=react" alt="React" />
-  <a href="https://discord.com/invite/84Kex3GGAh" target="_blank">
-  <img src="https://img.shields.io/discord/1399603591471435907?logo=discord&labelColor=%20%235462eb&logoColor=%20%23f5f5f5&color=%20%235462eb" alt="chat on Discord" />
-  </a>
-  <img src="https://img.shields.io/github/downloads/ValueCell-ai/Agent-i/total?color=%23027DEB" alt="Downloads" />
-  <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
-</p>
+[🌐 agent-i.app](https://agent-i.app) · [📄 Landing Page Repo](https://github.com/BIGWOO/agent-i)
 
-<p align="center">
-  English | <a href="README.zh-CN.md">简体中文</a>
-</p>
+</div>
 
 ---
 
-## Overview
+## ✨ 關於 Agent-i Desktop
 
-**Agent-i** bridges the gap between powerful AI agents and everyday users. Built on top of [OpenClaw](https://github.com/OpenClaw), it transforms command-line AI orchestration into an accessible, beautiful desktop experience—no terminal required.
+Agent-i Desktop 是一個桌面應用程式，讓不懂技術的用戶透過圖形化介面，幾分鐘內完成 AI 助理的部署。
 
-Whether you're automating workflows, managing AI-powered channels, or scheduling intelligent tasks, Agent-i provides the interface you need to harness AI agents effectively.
+不需要打開終端機、不需要寫程式碼 — 跟著 Setup Wizard 一步步完成，你的 AI 助理就上線了。
 
-Agent-i comes pre-configured with best-practice model providers and natively supports Windows as well as multi-language settings. Of course, you can also fine-tune advanced configurations via **Settings → Advanced → Developer Mode**.
-
----
-## Screenshot
-
-<p align="center">
-  <img src="resources/screenshot/chat.png" style="width: 100%; height: auto;">
-</p>
-
-<p align="center">
-  <img src="resources/screenshot/cron_task.png" style="width: 100%; height: auto;">
-</p>
-
-<p align="center">
-  <img src="resources/screenshot/skills.png" style="width: 100%; height: auto;">
-</p>
-
-<p align="center">
-  <img src="resources/screenshot/channels.png" style="width: 100%; height: auto;">
-</p>
-
-<p align="center">
-  <img src="resources/screenshot/dashboard.png" style="width: 100%; height: auto;">
-</p>
-
-<p align="center">
-  <img src="resources/screenshot/settings.png" style="width: 100%; height: auto;">
-</p>
+<!-- screenshot -->
 
 ---
 
-## Why Agent-i
+## 🎯 功能亮點
 
-Building AI agents shouldn't require mastering the command line. Agent-i was designed with a simple philosophy: **powerful technology deserves an interface that respects your time.**
-
-| Challenge | Agent-i Solution |
-|-----------|----------------|
-| Complex CLI setup | One-click installation with guided setup wizard |
-| Configuration files | Visual settings with real-time validation |
-| Process management | Automatic gateway lifecycle management |
-| Multiple AI providers | Unified provider configuration panel |
-| Skill/plugin installation | Built-in skill marketplace and management |
-
-### OpenClaw Inside
-
-Agent-i is built directly upon the official **OpenClaw** core. Instead of requiring a separate installation, we embed the runtime within the application to provide a seamless "battery-included" experience.
-
-We are committed to maintaining strict alignment with the upstream OpenClaw project, ensuring that you always have access to the latest capabilities, stability improvements, and ecosystem compatibility provided by the official releases.
+- 🧙 **Setup Wizard（7 步驟）** — 從零到部署完成的引導式設定流程
+- 🔐 **多種 AI 驗證方式** — Anthropic OAuth / GitHub Copilot / API Key 自由選擇
+- 🎭 **AI 人設選擇** — 預設多種 AI 助理角色風格
+- 🤖 **Telegram Bot SOP** — 手把手教你建立 Telegram Bot Token
+- 🌐 **Gateway 管理** — 圖形化管理 OpenClaw Gateway 服務
+- 💬 **多 Channel 支援** — LINE / Telegram / Discord
+- 🌍 **i18n 四語言** — English / 简体中文 / 繁體中文 / 日本語
+- 📦 **一鍵安裝** — macOS / Windows 原生安裝包
 
 ---
 
-## Features
+## 📁 專案結構
 
-### 🎯 Zero Configuration Barrier
-Complete the entire setup—from installation to your first AI interaction—through an intuitive graphical interface. No terminal commands, no YAML files, no environment variable hunting.
+```
+src/
+├── pages/
+│   ├── Setup/            # Setup Wizard 主流程
+│   ├── Dashboard/        # 儀表板
+│   ├── Channels/         # Channel 管理（LINE/TG/Discord）
+│   ├── Chat/             # 對話介面
+│   ├── Settings/         # 設定頁面
+│   ├── Skills/           # AI 技能管理
+│   └── Cron/             # 排程任務
+├── components/
+│   ├── setup/            # Setup Wizard 元件
+│   ├── layout/           # 佈局元件
+│   ├── settings/         # 設定元件
+│   ├── common/           # 共用元件
+│   └── ui/               # 基礎 UI 元件
+├── i18n/
+│   └── locales/          # 翻譯檔（en/zh/zh-TW/ja）
+├── stores/               # 狀態管理
+├── lib/                  # 工具函式
+└── types/                # TypeScript 型別定義
 
-### 💬 Intelligent Chat Interface
-Communicate with AI agents through a modern chat experience. Support for multiple conversation contexts, message history, and rich content rendering with Markdown.
-
-### 📡 Multi-Channel Management
-Configure and monitor multiple AI channels simultaneously. Each channel operates independently, allowing you to run specialized agents for different tasks.
-
-### ⏰ Cron-Based Automation
-Schedule AI tasks to run automatically. Define triggers, set intervals, and let your AI agents work around the clock without manual intervention.
-
-### 🧩 Extensible Skill System
-Extend your AI agents with pre-built skills. Browse, install, and manage skills through the integrated skill panel—no package managers required.
-
-### 🔐 Secure Provider Integration
-Connect to multiple AI providers (OpenAI, Anthropic, and more) with credentials stored securely in your system's native keychain.
-
-### 🌙 Adaptive Theming
-Light mode, dark mode, or system-synchronized themes. Agent-i adapts to your preferences automatically.
+electron/                 # Electron 主程序
+scripts/                  # 建置腳本
+```
 
 ---
 
-## Getting Started
+## 🚀 快速開始
 
-### System Requirements
+### 前置需求
 
-- **Operating System**: macOS 11+, Windows 10+, or Linux (Ubuntu 20.04+)
-- **Memory**: 4GB RAM minimum (8GB recommended)
-- **Storage**: 1GB available disk space
+- **Node.js** ≥ 20
+- **pnpm** ≥ 9
 
-### Installation
-
-#### Pre-built Releases (Recommended)
-
-Download the latest release for your platform from the [Releases](https://github.com/ValueCell-ai/Agent-i/releases) page.
-
-#### Build from Source
+### 安裝與開發
 
 ```bash
-# Clone the repository
-git clone https://github.com/ValueCell-ai/Agent-i.git
-cd Agent-i
+# 初始化（安裝依賴 + 下載 bundled uv）
+pnpm init
 
-# Initialize the project
-pnpm run init
-
-# Start in development mode
+# 啟動開發模式
 pnpm dev
+
+# 型別檢查
+pnpm typecheck
+
+# 執行測試
+pnpm test
 ```
 
-### First Launch
-
-When you launch Agent-i for the first time, the **Setup Wizard** will guide you through:
-
-1. **Language & Region** – Configure your preferred locale
-2. **AI Provider** – Enter your API keys for supported providers
-3. **Skill Bundles** – Select pre-configured skills for common use cases
-4. **Verification** – Test your configuration before entering the main interface
-
----
-
-## Architecture
-
-Agent-i employs a **dual-process architecture** that separates UI concerns from AI runtime operations:
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Agent-i Desktop App                         │
-│                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │              Electron Main Process                          │  │
-│  │  • Window & application lifecycle management               │  │
-│  │  • Gateway process supervision                              │  │
-│  │  • System integration (tray, notifications, keychain)       │  │
-│  │  • Auto-update orchestration                                │  │
-│  └────────────────────────────────────────────────────────────┘  │
-│                              │                                    │
-│                              │ IPC                                │
-│                              ▼                                    │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │              React Renderer Process                         │  │
-│  │  • Modern component-based UI (React 19)                     │  │
-│  │  • State management with Zustand                            │  │
-│  │  • Real-time WebSocket communication                        │  │
-│  │  • Rich Markdown rendering                                  │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-                               │ WebSocket (JSON-RPC)
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     OpenClaw Gateway                             │
-│                                                                  │
-│  • AI agent runtime and orchestration                           │
-│  • Message channel management                                    │
-│  • Skill/plugin execution environment                           │
-│  • Provider abstraction layer                                    │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Design Principles
-
-- **Process Isolation**: The AI runtime operates in a separate process, ensuring UI responsiveness even during heavy computation
-- **Graceful Recovery**: Built-in reconnection logic with exponential backoff handles transient failures automatically
-- **Secure Storage**: API keys and sensitive data leverage the operating system's native secure storage mechanisms
-- **Hot Reload**: Development mode supports instant UI updates without restarting the gateway
-
----
-
-## Use Cases
-
-### 🤖 Personal AI Assistant
-Configure a general-purpose AI agent that can answer questions, draft emails, summarize documents, and help with everyday tasks—all from a clean desktop interface.
-
-### 📊 Automated Monitoring
-Set up scheduled agents to monitor news feeds, track prices, or watch for specific events. Results are delivered to your preferred notification channel.
-
-### 💻 Developer Productivity
-Integrate AI into your development workflow. Use agents to review code, generate documentation, or automate repetitive coding tasks.
-
-### 🔄 Workflow Automation
-Chain multiple skills together to create sophisticated automation pipelines. Process data, transform content, and trigger actions—all orchestrated visually.
-
----
-
-## Development
-
-### Prerequisites
-
-- **Node.js**: 22+ (LTS recommended)
-- **Package Manager**: pnpm 9+ (recommended) or npm
-
-### Project Structure
-
-```
-Agent-i/
-├── electron/              # Electron Main Process
-│   ├── main/             # Application entry, window management
-│   ├── gateway/          # OpenClaw Gateway process manager
-│   ├── preload/          # Secure IPC bridge scripts
-│   └── utils/            # Utilities (storage, auth, paths)
-├── src/                   # React Renderer Process
-│   ├── components/       # Reusable UI components
-│   │   ├── ui/          # Base components (shadcn/ui)
-│   │   ├── layout/      # Layout components (sidebar, header)
-│   │   └── common/      # Shared components
-│   ├── pages/           # Application pages
-│   │   ├── Setup/       # Initial setup wizard
-│   │   ├── Dashboard/   # Home dashboard
-│   │   ├── Chat/        # AI chat interface
-│   │   ├── Channels/    # Channel management
-│   │   ├── Skills/      # Skill browser & manager
-│   │   ├── Cron/        # Scheduled tasks
-│   │   └── Settings/    # Configuration panels
-│   ├── stores/          # Zustand state stores
-│   ├── lib/             # Frontend utilities
-│   └── types/           # TypeScript type definitions
-├── resources/            # Static assets (icons, images)
-├── scripts/              # Build & utility scripts
-└── tests/               # Test suites
-```
-
-### Available Commands
+### 建置安裝包
 
 ```bash
-# Development
-pnpm dev                  # Start with hot reload
-pnpm dev:electron         # Launch Electron directly
+# 完整建置（Vite + Electron Builder）
+pnpm build
 
-# Quality
-pnpm lint                 # Run ESLint
-pnpm lint:fix             # Auto-fix issues
-pnpm typecheck            # TypeScript validation
-
-# Testing
-pnpm test                 # Run unit tests
-pnpm test:watch           # Watch mode
-pnpm test:coverage        # Generate coverage report
-pnpm test:e2e             # Run Playwright E2E tests
-
-# Build & Package
-pnpm build                # Full production build
-pnpm package              # Package for current platform
-pnpm package:mac          # Package for macOS
-pnpm package:win          # Package for Windows
-pnpm package:linux        # Package for Linux
+# 僅建置前端
+pnpm build:vite
 ```
 
-### Tech Stack
+---
 
-| Layer | Technology |
-|-------|------------|
-| Runtime | Electron 40+ |
-| UI Framework | React 19 + TypeScript |
-| Styling | Tailwind CSS + shadcn/ui |
-| State | Zustand |
-| Build | Vite + electron-builder |
-| Testing | Vitest + Playwright |
-| Animation | Framer Motion |
-| Icons | Lucide React |
+## 🛠 開發指令
+
+| 指令 | 說明 |
+|------|------|
+| `pnpm init` | 初始化專案（安裝依賴 + 下載 uv） |
+| `pnpm dev` | 啟動 Vite + Electron 開發模式 |
+| `pnpm build` | 建置生產版本 + 打包安裝檔 |
+| `pnpm build:vite` | 僅建置前端 |
+| `pnpm lint` | ESLint 檢查並自動修復 |
+| `pnpm typecheck` | TypeScript 型別檢查 |
+| `pnpm test` | 執行 Vitest 單元測試 |
+| `pnpm test:e2e` | 執行 Playwright E2E 測試 |
 
 ---
 
-## Contributing
+## 🎨 設計系統
 
-We welcome contributions from the community! Whether it's bug fixes, new features, documentation improvements, or translations—every contribution helps make Agent-i better.
-
-### How to Contribute
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes with clear messages
-4. **Push** to your branch
-5. **Open** a Pull Request
-
-### Guidelines
-
-- Follow the existing code style (ESLint + Prettier)
-- Write tests for new functionality
-- Update documentation as needed
-- Keep commits atomic and descriptive
+| Token | 值 | 用途 |
+|-------|-----|------|
+| 背景色 | `#FAFAF8` | Nordic Daylight 暖米白 |
+| 品牌綠 | `#5C8C6E` | 主要品牌色、按鈕、強調 |
+| 設計語言 | Nordic Daylight | 溫暖、乾淨、友善 |
 
 ---
 
-## Acknowledgments
+## 🤝 貢獻
 
-Agent-i is built on the shoulders of excellent open-source projects:
+歡迎貢獻！本專案 fork 自 [OpenClaw/ClawX](https://github.com/OpenClaw/ClawX)，品牌與 UI 已重新設計為 Agent-i。
 
-- [OpenClaw](https://github.com/OpenClaw) – The AI agent runtime
-- [Electron](https://www.electronjs.org/) – Cross-platform desktop framework
-- [React](https://react.dev/) – UI component library
-- [shadcn/ui](https://ui.shadcn.com/) – Beautifully designed components
-- [Zustand](https://github.com/pmndrs/zustand) – Lightweight state management
-
----
-
-## Community
-
-Join our community to connect with other users, get support, and share your experiences.
-
-| Enterprise WeChat | Feishu Group | Discord |
-| :---: | :---: | :---: |
-| <img src="src/assets/community/wecom-qr.png" width="150" alt="WeChat QR Code" /> | <img src="src/assets/community/feishu-qr.png" width="150" alt="Feishu QR Code" /> | <img src="src/assets/community/20260212-185822.png" width="150" alt="Discord QR Code" /> |
+1. Fork 這個 repo
+2. 建立功能分支 (`git checkout -b feature/amazing-feature`)
+3. Commit 你的修改 (`git commit -m 'feat: 新增很棒的功能'`)
+4. Push 到分支 (`git push origin feature/amazing-feature`)
+5. 開啟 Pull Request
 
 ---
 
-## License
+## 📝 License
 
-Agent-i is released under the [MIT License](LICENSE). You're free to use, modify, and distribute this software.
+MIT © Agent-i Team
 
 ---
 
-<p align="center">
-  <sub>Built with ❤️ by the ValueCell Team</sub>
-</p>
+<div align="center">
+
+**Agent-i** — 我的 AI，我做主
+
+[官網](https://agent-i.app) · [Landing Page](https://github.com/BIGWOO/agent-i) · [回報問題](https://github.com/BIGWOO/ClawX/issues)
+
+</div>
