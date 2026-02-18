@@ -32,6 +32,10 @@ interface SettingsState {
   // Setup
   setupComplete: boolean;
 
+  // Persona
+  persona: string;
+  customPersonaText: string;
+
   // Actions
   setTheme: (theme: Theme) => void;
   setLanguage: (language: string) => void;
@@ -44,6 +48,8 @@ interface SettingsState {
   setAutoDownloadUpdate: (value: boolean) => void;
   setSidebarCollapsed: (value: boolean) => void;
   setDevModeUnlocked: (value: boolean) => void;
+  setPersona: (persona: string) => void;
+  setCustomPersonaText: (text: string) => void;
   markSetupComplete: () => void;
   resetSettings: () => void;
 }
@@ -67,6 +73,8 @@ const defaultSettings = {
   sidebarCollapsed: false,
   devModeUnlocked: false,
   setupComplete: false,
+  persona: 'friendly-companion',
+  customPersonaText: '',
 };
 
 export const useSettingsStore = create<SettingsState>()(
@@ -85,6 +93,8 @@ export const useSettingsStore = create<SettingsState>()(
       setAutoDownloadUpdate: (autoDownloadUpdate) => set({ autoDownloadUpdate }),
       setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
       setDevModeUnlocked: (devModeUnlocked) => set({ devModeUnlocked }),
+      setPersona: (persona) => set({ persona }),
+      setCustomPersonaText: (customPersonaText) => set({ customPersonaText }),
       markSetupComplete: () => set({ setupComplete: true }),
       resetSettings: () => set(defaultSettings),
     }),

@@ -23,6 +23,10 @@
         "complete": {
             "title": "完了！",
             "description": "Agent-iを使用する準備が整いました"
+        },
+        "persona": {
+            "title": "AIペルソナを選択",
+            "description": "AIアシスタントの個性を選びましょう"
         }
     },
     "welcome": {
@@ -124,6 +128,38 @@
         "gateway": "ゲートウェイ",
         "running": "実行中",
         "footer": "設定でスキルをカスタマイズしたり、チャンネルを接続したりできます"
+    },
+    "persona": {
+        "title": "AIペルソナを選択",
+        "description": "AIアシスタントの個性を選びましょう",
+        "templates": {
+            "professional-secretary": {
+                "name": "プロ秘書",
+                "desc": "丁寧でフォーマル、効率的"
+            },
+            "friendly-companion": {
+                "name": "親しい友人",
+                "desc": "カジュアルで自然、友達のように"
+            },
+            "learning-buddy": {
+                "name": "学習パートナー",
+                "desc": "丁寧な説明、学びを応援"
+            },
+            "customer-service": {
+                "name": "カスタマーサポート",
+                "desc": "プロフェッショナルで問題解決型"
+            },
+            "creative-partner": {
+                "name": "クリエイティブパートナー",
+                "desc": "自由な発想、インスピレーション"
+            },
+            "custom": {
+                "name": "カスタム",
+                "desc": "自分で個性を書く"
+            }
+        },
+        "customPlaceholder": "希望するAIの個性を説明してください...",
+        "skip": "このステップをスキップ"
     },
     "nav": {
         "next": "次へ",

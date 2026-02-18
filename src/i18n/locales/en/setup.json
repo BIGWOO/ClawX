@@ -23,6 +23,10 @@
         "complete": {
             "title": "All Set!",
             "description": "Agent-i is ready to use"
+        },
+        "persona": {
+            "title": "Choose AI Persona",
+            "description": "Pick a personality for your AI assistant"
         }
     },
     "welcome": {
@@ -124,6 +128,38 @@
         "gateway": "Gateway",
         "running": "Running",
         "footer": "You can customize skills and connect channels in Settings"
+    },
+    "persona": {
+        "title": "Choose AI Persona",
+        "description": "Pick a personality for your AI assistant",
+        "templates": {
+            "professional-secretary": {
+                "name": "Professional Secretary",
+                "desc": "Formal, polite, and efficient"
+            },
+            "friendly-companion": {
+                "name": "Friendly Companion",
+                "desc": "Casual and natural, like chatting with a friend"
+            },
+            "learning-buddy": {
+                "name": "Learning Buddy",
+                "desc": "Patient explanations, encouraging learning"
+            },
+            "customer-service": {
+                "name": "Customer Service",
+                "desc": "Professional, courteous, problem-oriented"
+            },
+            "creative-partner": {
+                "name": "Creative Partner",
+                "desc": "Imaginative and inspiring"
+            },
+            "custom": {
+                "name": "Custom",
+                "desc": "Write your own personality description"
+            }
+        },
+        "customPlaceholder": "Describe the AI personality you want...",
+        "skip": "Skip this step"
     },
     "nav": {
         "next": "Next",

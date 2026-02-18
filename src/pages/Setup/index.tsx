@@ -50,8 +50,9 @@ const STEP = {
   RUNTIME: 1,
   PROVIDER: 2,
   CHANNEL: 3,
-  INSTALLING: 4,
-  COMPLETE: 5,
+  PERSONA: 4,
+  INSTALLING: 5,
+  COMPLETE: 6,
 } as const;
 
 const steps: SetupStep[] = [
@@ -74,6 +75,11 @@ const steps: SetupStep[] = [
     id: 'channel',
     title: 'Connect a Channel',
     description: 'Connect a messaging platform (optional)',
+  },
+  {
+    id: 'persona',
+    title: 'Choose AI Persona',
+    description: 'Pick a personality for your AI assistant',
   },
   {
     id: 'installing',
@@ -124,6 +130,9 @@ export function Setup() {
   const [installedSkills, setInstalledSkills] = useState<string[]>([]);
   // Runtime check status
   const [runtimeChecksPassed, setRuntimeChecksPassed] = useState(false);
+  // Persona state
+  const [selectedPersona, setSelectedPersona] = useState('friendly-companion');
+  const [customPersonaText, setCustomPersonaText] = useState('');
 
   const safeStepIndex = Number.isInteger(currentStep)
     ? Math.min(Math.max(currentStep, STEP.WELCOME), steps.length - 1)
@@ -133,6 +142,8 @@ export function Setup() {
   const isLastStep = safeStepIndex === steps.length - 1;
 
   const markSetupComplete = useSettingsStore((state) => state.markSetupComplete);
+  const setPersonaSetting = useSettingsStore((state) => state.setPersona);
+  const setCustomPersonaTextSetting = useSettingsStore((state) => state.setCustomPersonaText);
 
   // Derive canProceed based on current step - computed directly to avoid useEffect
   const canProceed = useMemo(() => {
@@ -145,6 +156,8 @@ export function Setup() {
         return providerConfigured;
       case STEP.CHANNEL:
         return true; // Always allow proceeding — channel step is optional
+      case STEP.PERSONA:
+        return true; // Always allow proceeding — persona step is optional
       case STEP.INSTALLING:
         return false; // Cannot manually proceed, auto-proceeds when done
       case STEP.COMPLETE:
@@ -156,6 +169,9 @@ export function Setup() {
 
   const handleNext = async () => {
     if (isLastStep) {
+      // Persist persona selection
+      setPersonaSetting(selectedPersona);
+      setCustomPersonaTextSetting(customPersonaText);
       // Complete setup
       markSetupComplete();
       toast.success(t('complete.title'));
@@ -251,6 +267,14 @@ export function Setup() {
                 />
               )}
               {safeStepIndex === STEP.CHANNEL && <SetupChannelContent />}
+              {safeStepIndex === STEP.PERSONA && (
+                <PersonaContent
+                  selectedPersona={selectedPersona}
+                  onSelectPersona={setSelectedPersona}
+                  customPersonaText={customPersonaText}
+                  onCustomPersonaTextChange={setCustomPersonaText}
+                />
+              )}
               {safeStepIndex === STEP.INSTALLING && (
                 <InstallingContent
                   skills={defaultSkills}
@@ -278,12 +302,12 @@ export function Setup() {
                   )}
                 </div>
                 <div className="flex gap-2">
-                  {safeStepIndex === STEP.CHANNEL && (
+                  {(safeStepIndex === STEP.CHANNEL || safeStepIndex === STEP.PERSONA) && (
                     <Button variant="ghost" onClick={handleNext}>
                       {t('nav.skipStep')}
                     </Button>
                   )}
-                  {!isLastStep && safeStepIndex !== STEP.RUNTIME && safeStepIndex !== STEP.CHANNEL && (
+                  {!isLastStep && safeStepIndex !== STEP.RUNTIME && safeStepIndex !== STEP.CHANNEL && safeStepIndex !== STEP.PERSONA && (
                     <Button variant="ghost" onClick={handleSkip}>
                       {t('nav.skipSetup')}
                     </Button>
@@ -1378,6 +1402,82 @@ function ProviderContent({
   );
 }
 
+// ==================== Persona Content ====================
+
+const PERSONA_TEMPLATES = [
+  { id: 'professional-secretary', icon: '💼' },
+  { id: 'friendly-companion', icon: '😊' },
+  { id: 'learning-buddy', icon: '📚' },
+  { id: 'customer-service', icon: '🎧' },
+  { id: 'creative-partner', icon: '🎨' },
+  { id: 'custom', icon: '✏️' },
+] as const;
+
+interface PersonaContentProps {
+  selectedPersona: string;
+  onSelectPersona: (id: string) => void;
+  customPersonaText: string;
+  onCustomPersonaTextChange: (text: string) => void;
+}
+
+function PersonaContent({
+  selectedPersona,
+  onSelectPersona,
+  customPersonaText,
+  onCustomPersonaTextChange,
+}: PersonaContentProps) {
+  const { t } = useTranslation('setup');
+
+  return (
+    <div className="space-y-4">
+      <div className="text-center mb-2">
+        <div className="text-4xl mb-3">🎭</div>
+        <h2 className="text-xl font-semibold">{t('persona.title')}</h2>
+        <p className="text-muted-foreground text-sm mt-1">
+          {t('persona.description')}
+        </p>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        {PERSONA_TEMPLATES.map((p) => {
+          const isSelected = selectedPersona === p.id;
+          return (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => onSelectPersona(p.id)}
+              className={cn(
+                'p-4 rounded-lg text-center transition-all border-2',
+                'hover:bg-accent',
+                isSelected
+                  ? 'border-primary bg-primary/10'
+                  : 'border-transparent bg-muted/50'
+              )}
+            >
+              <div className="text-3xl mb-2">{p.icon}</div>
+              <p className="font-medium text-sm">{t(`persona.templates.${p.id}.name`)}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t(`persona.templates.${p.id}.desc`)}</p>
+            </button>
+          );
+        })}
+      </div>
+      {selectedPersona === 'custom' && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+        >
+          <textarea
+            value={customPersonaText}
+            onChange={(e) => onCustomPersonaTextChange(e.target.value)}
+            placeholder={t('persona.customPlaceholder')}
+            className="w-full h-24 rounded-lg border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 // ==================== Setup Channel Content ====================
 
 function SetupChannelContent() {
@@ -1673,23 +1773,12 @@ function InstallingContent({ skills, onComplete, onSkip }: InstallingContentProp
         setSkillStates(prev => prev.map(s => ({ ...s, status: 'installing' })));
         setOverallProgress(10);
 
-        // Step 2: Call the backend to install uv and setup Python
-        const result = await window.electron.ipcRenderer.invoke('uv:install-all') as {
-          success: boolean;
-          error?: string
-        };
+        // Mark all skills as completed (environment setup handled by gateway)
+        setSkillStates(prev => prev.map(s => ({ ...s, status: 'completed' })));
+        setOverallProgress(100);
 
-        if (result.success) {
-          setSkillStates(prev => prev.map(s => ({ ...s, status: 'completed' })));
-          setOverallProgress(100);
-
-          await new Promise((resolve) => setTimeout(resolve, 800));
-          onComplete(skills.map(s => s.id));
-        } else {
-          setSkillStates(prev => prev.map(s => ({ ...s, status: 'failed' })));
-          setErrorMessage(result.error || 'Unknown error during installation');
-          toast.error('Environment setup failed');
-        }
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        onComplete(skills.map(s => s.id));
       } catch (err) {
         setSkillStates(prev => prev.map(s => ({ ...s, status: 'failed' })));
         setErrorMessage(String(err));

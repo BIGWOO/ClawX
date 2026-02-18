@@ -23,6 +23,10 @@
         "complete": {
             "title": "準備就緒！",
             "description": "Agent-i 已準備好使用"
+        },
+        "persona": {
+            "title": "選擇 AI 人設",
+            "description": "為你的 AI 助理選擇個性"
         }
     },
     "welcome": {
@@ -124,6 +128,38 @@
         "gateway": "閘道",
         "running": "執行中",
         "footer": "您可以在設定中自訂技能並連接頻道"
+    },
+    "persona": {
+        "title": "選擇 AI 人設",
+        "description": "為你的 AI 助理選擇個性",
+        "templates": {
+            "professional-secretary": {
+                "name": "專業秘書",
+                "desc": "正式有禮、高效精準"
+            },
+            "friendly-companion": {
+                "name": "親切朋友",
+                "desc": "輕鬆自然、像朋友聊天"
+            },
+            "learning-buddy": {
+                "name": "學習夥伴",
+                "desc": "耐心解說、鼓勵學習"
+            },
+            "customer-service": {
+                "name": "客服助手",
+                "desc": "專業客氣、問題導向"
+            },
+            "creative-partner": {
+                "name": "創意夥伴",
+                "desc": "天馬行空、激發靈感"
+            },
+            "custom": {
+                "name": "自訂",
+                "desc": "自己寫個性描述"
+            }
+        },
+        "customPlaceholder": "描述你想要的 AI 個性...",
+        "skip": "跳過此步驟"
     },
     "nav": {
         "next": "下一步",
