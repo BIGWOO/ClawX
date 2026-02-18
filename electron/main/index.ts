@@ -119,7 +119,7 @@ async function initialize(): Promise<void> {
   session.defaultSession.webRequest.onBeforeSendHeaders(
     { urls: ['https://openrouter.ai/*'] },
     (details, callback) => {
-      details.requestHeaders['HTTP-Referer'] = 'https://claw-x.com';
+      details.requestHeaders['HTTP-Referer'] = 'https://agent-i.app';
       details.requestHeaders['X-Title'] = 'Agent-i';
       callback({ requestHeaders: details.requestHeaders });
     },
